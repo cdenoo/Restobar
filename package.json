@@ -13,6 +13,6 @@
   "bundledDependencies": [],
   "private": true,
   "scripts": {
-    "start": "controller/server.js"
+    "start": "node controller/server.js"
   }
 }
