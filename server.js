@@ -2,9 +2,6 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 
-/**
- *  Define the sample application.
- */
 var RestobarApp = function() {
     var self = this;
     self.setupVariables = function () {
@@ -44,8 +41,7 @@ var RestobarApp = function() {
         self.routes = {};
 
         self.routes['/'] = function (req, res, next) {
-            //res.setHeader('Content-Type', 'text/html');
-            res.render('index', {title: 'Home', home_active: 'active'});
+            res.render('index', {title: 'Home'});
         };
     };
 
@@ -68,7 +64,7 @@ var RestobarApp = function() {
 
     self.initializeViewEngine = function () {
         self.app.set('view engine', 'pug');
-        self.app.set('views', '../views');
+        self.app.set('views', path.join('views'));
     };
 
     self.initialize = function () {
