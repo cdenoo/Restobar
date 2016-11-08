@@ -2,9 +2,6 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 
-/**
- *  Define the sample application.
- */
 var RestobarApp = function() {
     var self = this;
     self.setupVariables = function () {
@@ -12,7 +9,7 @@ var RestobarApp = function() {
         self.port = process.env.PORT || 8080;
 
         if (typeof self.ipaddress === "undefined") {
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
+            console.warn('No IP var, using 127.0.0.1');
             self.ipaddress = "127.0.0.1";
         }
     };
@@ -60,21 +57,18 @@ var RestobarApp = function() {
         self.createRoutes();
         self.app = express();
 
+		self.app.set('view engine', 'pug');
+        self.app.set('views', path.join(__dirname, 'views'));
+		
         for (var r in self.routes) {
             self.app.get(r, secureRedirect, self.routes[r]);
         }
-    };
-
-    self.initializeViewEngine = function () {
-        self.app.set('view engine', 'pug');
-        self.app.set('views', path.join(__dirname, 'views'));
     };
 
     self.initialize = function () {
         self.setupVariables();
         self.setupTerminationHandlers();
         self.initializeServer();
-        self.initializeViewEngine();
     };
 
     self.start = function () {
