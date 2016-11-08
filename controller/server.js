@@ -73,8 +73,8 @@ var RestobarApp = function() {
     self.initialize = function () {
         self.setupVariables();
         self.setupTerminationHandlers();
-        self.initializeServer();
         self.initializeViewEngine();
+        self.initializeServer();
     };
 
     self.start = function () {
