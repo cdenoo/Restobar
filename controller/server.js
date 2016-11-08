@@ -60,20 +60,17 @@ var RestobarApp = function() {
         self.createRoutes();
         self.app = express();
 
+        self.app.set('view engine', 'pug');
+        self.app.set('views', '../views');
+
         for (var r in self.routes) {
             self.app.get(r, secureRedirect, self.routes[r]);
         }
     };
 
-    self.initializeViewEngine = function () {
-        self.app.set('view engine', 'pug');
-        self.app.set('views', '../views');
-    };
-
     self.initialize = function () {
         self.setupVariables();
         self.setupTerminationHandlers();
-        self.initializeViewEngine();
         self.initializeServer();
     };
 
