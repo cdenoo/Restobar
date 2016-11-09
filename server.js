@@ -55,7 +55,7 @@ var RestobarApp = function() {
 
     self.initializeServer = function () {
         self.createRoutes();
-        self.app = express();
+        self.app = express.createServer();
 
         for (var r in self.routes) {
             self.app.get(r, secureRedirect, self.routes[r]);
