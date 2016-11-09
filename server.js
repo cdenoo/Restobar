@@ -10,15 +10,15 @@ var routes = { };
 
 createRoutes = function(){
 	routes['/'] = function(req, res, next) {
-		res.send('INDEX TODO');
+		res.render('index');
 	};
 };
 
 initRoutes = function(){
 	createRoutes();
 		
-	for (var r in this.routes) {
-		app.get(r, this.routes[r]);
+	for (var r in routes) {
+		app.get(r, routes[r]);
 	};
 };
 
