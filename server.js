@@ -46,6 +46,7 @@ var RestobarApp = function(){
 	this.start = function(){
 		this.initVariables();
 		this.initServer();
+		module.exports = this.app;
 	};
 	
 };
