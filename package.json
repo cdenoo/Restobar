@@ -1,17 +1,17 @@
 {
   "name": "Restobar",
-  "version": "1.0.0",
-  "description": "Restobar application",
-  "engines": {
-    "node": ">= 0.6.0",
-    "npm": ">= 1.0.0"
-  },
+  "version": "0.0.1",
+  "description": "Restobar Application",
+  "main": "server.js",
   "dependencies": {
-    "express": "~3.4.4",
+    "express": "^4.13.4",
     "pug": "~2.0.0-beta6"
   },
-  "devDependencies": {},
-  "bundledDependencies": [],
-  "private": true,
-  "main": "server.js"
+  "engine": {
+    "node": "*",
+    "npm": "*"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
 }
