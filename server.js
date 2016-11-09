@@ -29,7 +29,14 @@ initErrorHandling = function(){
 	});
 };
 
+initViews = function(){
+	app.set('views', path.join(__dirname, 'views'));
+	app.set('view engine', 'pug');
+};
+
 initServer = function(){
+	// Initialize view engine and directory
+	initViews();
 	// Initialize the routes
 	initRoutes();
 	// Initialize handling of errors
