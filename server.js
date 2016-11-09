@@ -2,6 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 
+
 var RestobarApp = function() {
     var self = this;
     self.setupVariables = function () {
@@ -55,7 +56,7 @@ var RestobarApp = function() {
 
     self.initializeServer = function () {
         self.createRoutes();
-        self.app = express.createServer();
+        self.app = express();
 
         for (var r in self.routes) {
             self.app.get(r, secureRedirect, self.routes[r]);
@@ -64,7 +65,7 @@ var RestobarApp = function() {
 
     self.initializeViewEngine = function () {
         self.app.set('view engine', 'pug');
-        self.app.set('views', path.join('views'));
+        self.app.set('views', path.join(__dirname, 'views'));
     };
 
     self.initialize = function () {

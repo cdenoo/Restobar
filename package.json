@@ -12,5 +12,5 @@
   "devDependencies": {},
   "bundledDependencies": [],
   "private": true,
-  "main": "controller/server.js"
+  "main": "server.js"
 }
