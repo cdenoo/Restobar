@@ -1,7 +1,6 @@
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
-var url = require('url');
 
 var app = express();
 
@@ -10,15 +9,15 @@ var routes = { };
 
 createRoutes = function(){
     routes['/'] = function(req, res, next) {
-        res.render('index');
+        res.render('index', {title:'Hello'});
     };
 };
 
 requireHTTPS = function(req, res, next) {
-    if(req.headers["x-forwarded-proto"] === "https"){
+    if(req.headers['x-forwarded-proto'] == 'https'){
         return next();
     }
-    res.redirect('https://' + req.headers.host + req.url);
+    res.redirect('https://' + req.headers.host + req.path);
 };
 
 initRoutes = function(){
@@ -53,4 +52,3 @@ initServer = function(){
 };
 
 initServer();
-//module.exports = app;
