@@ -4,14 +4,12 @@
   "description": "Restobar Application",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.13.4",
-    "pug": "~2.0.0-beta6"
+    "express": "^4.14.0",
+    "foreman": "^2.0.0",
+    "pug": "^2.0.0-beta6"
   },
   "engine": {
     "node": "*",
     "npm": "*"
-  },
-  "scripts": {
-    "start": "node server.js"
   }
 }
