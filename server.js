@@ -50,9 +50,7 @@ initServer = function(){
     initErrorHandling();
     // Make the server listen
     app.listen(port);
-
-    console.log("Server running at " + process.env.IP + ":" + process.env.PORT);
 };
 
 initServer();
-module.exports = app;
+//module.exports = app;
