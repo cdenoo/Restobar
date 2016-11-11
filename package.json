@@ -10,8 +10,5 @@
   "engine": {
     "node": "*",
     "npm": "*"
-  },
-  "scripts": {
-    "start": "node server.js"
   }
 }
