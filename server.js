@@ -35,6 +35,7 @@ initViews = function(){
 };
 
 initServer = function(){
+	app.use(express.static('public'));
 	// Initialize view engine and directory
 	initViews();
 	// Initialize the routes
