@@ -10,7 +10,7 @@ var routes = { };
 
 createRoutes = function(){
 	routes['/'] = function(req, res, next) {
-		res.render('index');
+		res.render('index', {title: 'Index'});
 	};
 };
 
