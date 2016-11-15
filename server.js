@@ -12,6 +12,9 @@ createRoutes = function(){
 	routes['/'] = function(req, res, next) {
 		res.render('index', {title: 'Index'});
 	};
+	routes['/register'] = function(req, res, next) {
+		res.render('register', {title: 'Register'});
+	};
 };
 
 initRoutes = function(){
