@@ -36,11 +36,15 @@ html
                             div.form-group
                                 label(for="email") Email:
                                 input#email.form-control(type="email", placeholder="Email address" name="email")
-                            //div.radio-check
-                                label(for="gender") Male
+                            div.form-group
+                                label(for="birthday") Birthday:
                                 br
-                                label(for="gender") Female
-                                input#gender.form-control(type="radio", name="gender")
+                                input#birthday.form-control(type="date", placeholder="dd/mm/yyyy" name="birthday")
+                            div.radio-inline
+                                != '<label for="gender"><input type="radio" name="gender" value="male"> Male </label>'
+                                br
+                                != '<label for="gender"><input type="radio" name="gender" value="female"> Female </label>'
                             //We choose a button with buttontype "primary".
+                            br
                             button.btn.btn-primary(type="submit") Register
         block bodycontent
