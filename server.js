@@ -2,52 +2,45 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 
-var app = express();
+var RestobarApp = function () {
+    this.initVariables = function () {
+        this.port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+        this.app = express();
+    };
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var routes = { };
+    this.initPublicDir = function () {
+        this.app.use(express.static('public'));
+    };
 
-createRoutes = function(){
-	routes['/'] = function(req, res, next) {
-		res.render('index', {title: 'Index'});
-	};
-	routes['/register'] = function(req, res, next) {
-		res.render('register', {title: 'Register'});
-	};
+    this.initViews = function () {
+        this.app.set('views', 'views');
+        this.app.set('view engine', 'pug');
+    };
+
+    this.initRoutes = function () {
+        var index = require('./routes/index');
+        index(this.app);
+
+        var register = require('./routes/register');
+        register(this.app);
+    };
+
+    this.initErrorHandling = function () {
+        this.app.use(function(err, req, res, next){
+            console.error(err.stack);
+            res.status(500).send('Something bad happened!');
+        });
+    };
+
+    this.initServer = function () {
+        this.initVariables();
+        this.initPublicDir();
+        this.initViews();
+        this.initRoutes();
+        this.initErrorHandling();
+        this.app.listen(this.port);
+    };
 };
 
-initRoutes = function(){
-	createRoutes();
-		
-	for (var r in routes) {
-		app.get(r, routes[r]);
-	};
-};
-
-initErrorHandling = function(){
-	app.use(function(err, req, res, next){
-		console.error(err.stack);
-		res.status(500).send('Something bad happened!');
-	});
-};
-
-initViews = function(){
-	app.set('views', path.join(__dirname, 'views'));
-	app.set('view engine', 'pug');
-};
-
-initServer = function(){
-	app.use(express.static('public'));
-	// Initialize view engine and directory
-	initViews();
-	// Initialize the routes
-	initRoutes();
-	// Initialize handling of errors
-	initErrorHandling();
-	// Make the server listen
-	app.listen(port);
-};
-
-initServer();
-module.exports = app;
+var app = new RestobarApp();
+app.initServer();
