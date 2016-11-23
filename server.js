@@ -23,6 +23,9 @@ var RestobarApp = function () {
 
         var register = require('./routes/register');
         register(this.app);
+
+        var home = require('./routes/home');
+        home(this.app);
     };
 
     this.initErrorHandling = function () {

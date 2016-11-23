@@ -1,0 +1,26 @@
+//
+   Created by thijsspinoy on 22/11/2016.
+
+doctype html
+html
+    head
+        include includes/jquery
+        include includes/bootstrap
+        title= title
+        link(rel="stylesheet", href="css/general.css")
+        block headcontent
+    body
+        h1 Welcome to Restobar!
+
+        h3 I have an account
+        form(method="POST" action="/register")
+            button.btn.btn-primary(type="submit") Log in
+
+        h3 I'm new here
+        form(method="POST" action="/register")
+            button.btn.btn-primary(type="submit") Sign up
+
+        br
+        img(src="restobar_logo.jpeg", alt="restobar_logo.jpeg")
+
+        block bodycontent
