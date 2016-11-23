@@ -1,10 +1,15 @@
 var express = require('express');
 var fs = require('fs');
+var bodyparser = require('body-parser');
 
 var RestobarApp = function () {
     this.initVariables = function () {
         this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
         this._app = express();
+        this._app.use(bodyparser.urlencoded({
+            extended: true
+        }));
+        this._app.use(bodyparser.json());
     };
 
     this.initPublicDir = function () {

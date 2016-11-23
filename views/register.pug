@@ -7,7 +7,7 @@ block bodycontent
                 h1 Register to Restobar
                 // register form
                 //Action must be specified such that the information is stored in the database.
-                form(method="POST" action="/register")
+                form(method="POST")
                     div.form-group
                         label(for="username") Username:
                         input#username.form-control(type="text", placeholder="Username" name="username")
@@ -26,10 +26,12 @@ block bodycontent
                     div.form-group
                         label(for="email") Email:
                         input#email.form-control(type="email", placeholder="Email address" name="email")
-                    //div.radio-check
-                        label(for="gender") Male
-                        br
-                        label(for="gender") Female
-                        input#gender.form-control(type="radio", name="gender")
+                    div
+                        label(for='male') Male
+                        input(type='radio' name='gender' id='male' value='male')
+                    div
+                        label(for='female') Female
+                        input(type='radio' name='gender' id='female' value='female')
                     //We choose a button with buttontype "primary".
-                    button.btn.btn-primary(type="submit") Register
+                    div
+                        button.btn.btn-primary(type="submit") Register
