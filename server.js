@@ -1,35 +1,43 @@
 var express = require('express');
 var fs = require('fs');
-var path = require('path');
+var bodyparser = require('body-parser');
 
 var RestobarApp = function () {
     this.initVariables = function () {
-        this.port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
-        this.app = express();
+        this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+        this._app = express();
+        this._app.use(bodyparser.urlencoded({
+            extended: true
+        }));
+        this._app.use(bodyparser.json());
     };
 
     this.initPublicDir = function () {
-        this.app.use(express.static('public'));
+        this._app.use(express.static('public'));
     };
 
     this.initViews = function () {
-        this.app.set('views', 'views');
-        this.app.set('view engine', 'pug');
+        this._app.set('views', 'views');
+        this._app.set('view engine', 'pug');
     };
 
     this.initRoutes = function () {
         var index = require('./routes/index');
-        index(this.app);
+        index(this._app);
 
         var register = require('./routes/register');
-        register(this.app);
+        register(this._app);
 
         var home = require('./routes/home');
-        home(this.app);
+        home(this._app);
     };
 
     this.initErrorHandling = function () {
-        this.app.use(function(err, req, res, next){
+        this._app.use(function (req, res, next) {
+            res.status(404).render('pagenotfound', {title: '404'});
+        });
+
+        this._app.use(function(err, req, res, next){
             console.error(err.stack);
             res.status(500).send('Something bad happened!');
         });
@@ -41,7 +49,7 @@ var RestobarApp = function () {
         this.initViews();
         this.initRoutes();
         this.initErrorHandling();
-        this.app.listen(this.port);
+        this._app.listen(this._port);
     };
 };
 
