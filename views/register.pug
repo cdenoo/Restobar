@@ -1,50 +1,40 @@
-//
-   Created by thijsspinoy on 15/11/2016.
-doctype html
-html
-    head
-        include includes/jquery
-        include includes/bootstrap
-        title= title
-        link(rel="stylesheet", href="css/general.css")
-        block headcontent
-    body
-        block content
-            h1 Register to Restobar
-            .main.container
-                .row
-                    //Create a column with width of 6 columns and start at offset of 3 columns.
-                    .col-md-6.col-md-offset-3
-                        // register form
-                        //Action must be specified such that the information is stored in the database.
-                        form(method="POST" action="/register")
-                            div.form-group
-                                label(for="username") Username:
-                                input#username.form-control(type="text", placeholder="Username" name="username")
-                            div.form-group
-                                label(for="pw") Password:
-                                input#pw.form-control(type="password", placeholder="Password" name="password")
-                            div.form-group
-                                label(for="pw2") Confirm Password:
-                                input#pw2.form-control(type="password", placeholder="Password again" name="confirmPassword")
-                            div.form-group
-                                label(for="firstName") First name:
-                                input#firstName.form-control(type="text", placeholder="First name" name="firstName")
-                            div.form-group
-                                label(for="lastName") Last name:
-                                input#lastName.form-control(type="text", placeholder="Last name" name="lastName")
-                            div.form-group
-                                label(for="email") Email:
-                                input#email.form-control(type="email", placeholder="Email address" name="email")
-                            div.form-group
-                                label(for="birthday") Birthday:
-                                br
-                                input#birthday.form-control(type="date", placeholder="dd/mm/yyyy" name="birthday")
-                            div.radio-inline
-                                != '<label for="gender"><input type="radio" name="gender" value="male"> Male </label>'
-                                br
-                                != '<label for="gender"><input type="radio" name="gender" value="female"> Female </label>'
-                            //We choose a button with buttontype "primary".
+extends basiclayout
+block bodycontent
+    div(class="bodytitle")
+        h1 Register to Restobar
+    .main.container
+            .row
+                //Create a column with width of 6 columns and start at offset of 3 columns.
+                .col-md-6.col-md-offset-3
+                    // register form
+                    //Action must be specified such that the information is stored in the database.
+                    form(class="registerForm" method="POST" action="/register")
+                        div.form-group
+                            label(for="username") Username:
+                            input#username.form-control(type="text", placeholder="Username" name="username")
+                        div.form-group
+                            label(for="pw") Password:
+                            input#pw.form-control(type="password", placeholder="Password" name="password")
+                        div.form-group
+                            label(for="pw2") Confirm Password:
+                            input#pw2.form-control(type="password", placeholder="Password again" name="confirmPassword")
+                        div.form-group
+                            label(for="firstName") First name:
+                            input#firstName.form-control(type="text", placeholder="First name" name="firstName")
+                        div.form-group
+                            label(for="lastName") Last name:
+                            input#lastName.form-control(type="text", placeholder="Last name" name="lastName")
+                        div.form-group
+                            label(for="email") Email:
+                            input#email.form-control(type="email", placeholder="Email address" name="email")
+                        div.form-group
+                            label(for="birthday") Birthday:
                             br
-                            button.btn.btn-primary(type="submit") Register
-        block bodycontent
+                            input#birthday.form-control(type="date", placeholder="dd/mm/yyyy" name="birthday")
+                        div.radio-inline
+                            != '<label for="gender"><input type="radio" name="gender" value="male"> Male </label>'
+                            br
+                            != '<label for="gender"><input type="radio" name="gender" value="female"> Female </label>'
+                        //We choose a button with buttontype "primary".
+                        br
+                        button.btn.btn-primary(type="submit") Register

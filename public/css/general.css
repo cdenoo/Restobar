@@ -2,13 +2,24 @@ body {
     //background: saddlebrown;
 }
 
-h1{
+div.bodytitle h1{
     color: chocolate;
-    background: saddlebrown;
     text-align: center;
     margin: 0;
-
 }
+
+nav {
+    background: saddlebrown;
+    text-align: center;
+}
+
+nav.titlebar h1{
+    color: chocolate;
+    margin: 0;
+}
+
+
+
 
 button{
     color: black;
