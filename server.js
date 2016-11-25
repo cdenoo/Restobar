@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var bodyparser = require('body-parser');
+var favicon = require('serve-favicon');
 
 var RestobarApp = function () {
     this.initVariables = function () {
@@ -10,6 +11,7 @@ var RestobarApp = function () {
             extended: true
         }));
         this._app.use(bodyparser.json());
+        this._app.use(favicon('public/images/favicon.ico'));
     };
 
     this.initPublicDir = function () {

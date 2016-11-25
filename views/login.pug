@@ -1,20 +1,20 @@
 extends basiclayout
 
 block bodycontent
-    div(class="bodytitle")
+    div(class="jumbotron pageTitle")
         h1 Welcome!
-    .row
-        .col-md-2.col-md-offset-3
-            h3 I have an account
-
-            form(class="form-horizontal" method="POST" action="/register")
-                div.form-group
-                    input#username.form-control(type="text", placeholder="Username" name="username")
-                div.form-group
-                    input#pw.form-control(type="password", placeholder="Password" name="password")
-                button.btn.btn-primary(type="submit") Log in
-        .col-md-2.col-md-offset-2
-            h3 I'm new here
-            p It takes only a few minutes to register. Press Sign Up and enjoy!
-            form(class="form-horizontal" method="POST" action="/register")
-                 button.btn.btn-primary(type="submit") Sign up
+    div(class='container-fluid')
+        div(class='panel panel-default ')
+            div(class='panel-body')
+                div(class='panel-body-content')
+                    h3 I have an account
+                    form(class="form-horizontal" method="POST")
+                        div(class='form-group')
+                            input(id='username' class='form-control' type='text' placeholder='Username' name='username')
+                        div(class='form-group')
+                            input(id='password' class='form-control' type='password' placeholder='Password' name='password')
+                        button(type='submit' class='btn btn-default inactive') Log in
+                div(class='panel-body-content')
+                    h3 I'm new here
+                    p It takes only a few minutes to register. Press Sign Up and enjoy!
+                    a(class='btn btn-default inactive' href='/register') Register

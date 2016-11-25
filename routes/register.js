@@ -4,7 +4,7 @@ module.exports = function (restobar) {
     });
 
     restobar._app.post('/register', function (req, res, next) {
-        restobar.devWarn(req.body);
+        restobar.devWarn('Registered with: ' + JSON.stringify(req.body));
         res.render('register', {title: 'Registered'});
     });
 };
