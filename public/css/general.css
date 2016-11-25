@@ -9,17 +9,6 @@ nav {
     padding: 2%;
 }
 
-button{
-    color: black;
-    text-emphasis-color: black;
-}
-
-#TopTitle {
-    color: papayawhip;
-    margin: 0;
-    text-decoration: none;
-}
-
 .btn.inactive{
     color: #7a3d13;
     background-color: papayawhip;
@@ -40,9 +29,51 @@ button{
     color: papayawhip;
     background-color: #7a3d13;
     text-align: center;
-    border: 7px double white;
+    border: 1.4em double white;
 }
 
 .panel-body-content {
     margin: 6%;
+    text-align: center;
 }
+
+.titlebar {
+    max-height: 10em;
+}
+
+.siteTopContainer {
+    text-align: center;
+    background-color: #7a3d13;
+    color:papayawhip;
+}
+
+.siteTopTitle {
+    font-size: 300%;
+}
+
+.siteTopTitle > a {
+    text-decoration: none;
+    color: papayawhip;
+    margin: 0;
+}
+
+.siteTopLogo {
+    height: 10em;
+}
+
+#siteLogo {
+    max-height: 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+/*@media screen and (min-width: 480px) {*/
+    /*#loginPanel {*/
+        /*width: 50%;*/
+    /*}*/
+/*}*/

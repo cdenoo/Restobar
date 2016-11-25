@@ -7,11 +7,13 @@ html
 		link(rel="stylesheet", href="css/general.css")
 		block headcontent
 	body
-		block layoutcontent
-		nav(class="titlebar")
-			h1
-				a(id='TopTitle' href='/') Restobar
-			img(src="./images/restobar_logo.png", alt="restobar_logo", width="20%", height="20%", align="center")
+		div(class='container-fluid')
+			block layoutcontent
+			div(class='siteTopContainer')
+				div(class='siteTopTitle')
+					a(href='/') Restobar
+				div(class='siteTopLogo')
+					img(id='siteLogo' src="./images/restobar_logo.png" alt="restobar_logo" align="center")
 			div(class='navbar navbar-default')
 				div(class='container-fluid')
 					ul(class='nav navbar-nav')
@@ -19,4 +21,4 @@ html
 							a(href='/') Home
 						li
 							a(href='/login') Login
-		block bodycontent
+			block bodycontent
