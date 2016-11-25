@@ -21,15 +21,17 @@ nav {
     border-color: black;
 }
 
-.pageTitle > h1 {
-    margin: 0;
-}
-
 .pageTitle {
     color: papayawhip;
     background-color: #7a3d13;
     text-align: center;
-    border: 1.4em double white;
+    border: 0.5em double white;
+
+    font-size: 300%
+}
+
+.jumbotron.pageTitle {
+    padding: 0.6em;
 }
 
 .panel-body-content {
@@ -71,9 +73,3 @@ nav {
     float: none;
     margin: 0 auto;
 }
-
-/*@media screen and (min-width: 480px) {*/
-    /*#loginPanel {*/
-        /*width: 50%;*/
-    /*}*/
-/*}*/

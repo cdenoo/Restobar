@@ -36,7 +36,11 @@ var RestobarApp = function () {
 
     this.initErrorHandling = function () {
         this._app.use(function (req, res, next) {
-            res.status(404).render('pagenotfound', {title: '404'});
+            res.status(404).render('errorpage', {title: '404: Page not found'});
+        });
+
+        this._app.use(function (err, req, res, next) {
+            res.status(400).render('errorpage', {title: '400: Bad request'});
         });
 
         this._app.use(function(err, req, res, next){
