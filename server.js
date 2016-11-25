@@ -23,13 +23,13 @@ var RestobarApp = function () {
 
     this.initRoutes = function () {
         var index = require('./routes/index');
-        index(this._app);
+        index(this);
 
         var register = require('./routes/register');
-        register(this._app);
+        register(this);
 
         var home = require('./routes/home');
-        home(this._app);
+        home(this);
     };
 
     this.initErrorHandling = function () {

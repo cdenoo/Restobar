@@ -1,42 +1,42 @@
 extends basiclayout
 block bodycontent
-    div(class="bodytitle")
+    div(class='jumbotron')
         h1 Register to Restobar
-    .main.container
-            .row
-                //Create a column with width of 6 columns and start at offset of 3 columns.
-                .col-md-6.col-md-offset-3
-                    // register form
-                    //Action must be specified such that the information is stored in the database.
-                    form(class="registerForm" method="POST")
-                        div.form-group
-                            label(for="username") Username:
-                            input#username.form-control(type="text", placeholder="Username" name="username")
-                        div.form-group
-                            label(for="pw") Password:
-                            input#pw.form-control(type="password", placeholder="Password" name="password")
-                        div.form-group
-                            label(for="pw2") Confirm Password:
-                            input#pw2.form-control(type="password", placeholder="Password again" name="confirmPassword")
-                        div.form-group
-                            label(for="firstName") First name:
-                            input#firstName.form-control(type="text", placeholder="First name" name="firstName")
-                        div.form-group
-                            label(for="lastName") Last name:
-                            input#lastName.form-control(type="text", placeholder="Last name" name="lastName")
-                        div.form-group
-                            label(for="email") Email:
-                            input#email.form-control(type="email", placeholder="Email address" name="email")
-                        div.form-group
-                            label(for="birthday") Birthday:
-                            br
-                            input#birthday.form-control(type="date", placeholder="dd/mm/yyyy" name="birthday")
-                        div
-                            input(type='radio' name='gender' id='male' value='male')
-                            label(for='male') Male
-                        div
-                            input(type='radio' name='gender' id='female' value='female')
-                            label(for='female') Female
-                        //We choose a button with buttontype "primary".
+    div(class='container-fluid')
+        div(class='panel panel-default')
+            div(class='panel-body')
+                //- register form
+                //TODO replace /*required*/ with required
+                form(class='registerForm' method='POST')
+                    div(class='form-group')
+                        label(for='username') * Username:
+                        input(id='username' class='form-control' type='text' placeholder='Username' name='username' /*required*/)
+                    div(class='form-group')
+                        label(for='pw') * Password:
+                        input(id='pw' class='form-control' type='password' placeholder='Password' name='password' /*required*/)
+                    div(class='form-group')
+                        label(for='pw2') * Confirm Password:
+                        input(id='pw2' class='form-control' type='password' placeholder='Repeat password' name='confirmPassword' /*required*/)
+                    div(class='form-group')
+                        label(for='firstName') * First name:
+                        input(id='firstName' class='form-control' type='text' placeholder='First name' name='firstName' /*required*/)
+                    div(class='form-group')
+                        label(for='lastName') * Last name:
+                        input(id='lastName' class='form-control' type='text' placeholder='Last name' name='lastName' /*required*/)
+                    div(class='form-group')
+                        label(for='email') * Email:
+                        input(id='email' class='form-control' type='email' placeholder='Email address' name='email' /*required*/)
+                    div(class='form-group')
+                        label(for='birthday') * Birthday:
+                        input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' name='birthday' /*required*/)
                     div
-                        button.btn.btn-primary(type="submit") Register
+                        input(type='radio' name='gender' id='male' value='male')
+                        label(for='male') Male
+                    div
+                        input(type='radio' name='gender' id='female' value='female')
+                        label(for='female') Female
+                    //-We choose a button with buttontype 'primary'.
+                    div
+                        button(class='btn btn-primary' type='submit') Register
+            div(class='panel-footer')
+                | Fields marked with * are required.
