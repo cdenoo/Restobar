@@ -43,6 +43,12 @@ var RestobarApp = function () {
         });
     };
 
+    this.devWarn = function (value) {
+        if(process.env.NODE_ENV === 'development'){
+            console.warn(value);
+        }
+    };
+
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
@@ -50,6 +56,8 @@ var RestobarApp = function () {
         this.initRoutes();
         this.initErrorHandling();
         this._app.listen(this._port);
+
+        this.devWarn('Server started on http://127.0.0.1:8080/');
     };
 };
 

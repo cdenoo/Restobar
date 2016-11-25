@@ -18,10 +18,16 @@ nav.titlebar h1{
     margin: 0;
 }
 
-
-
-
 button{
     color: black;
     text-emphasis-color: black;
+}
+
+#TopTitle {
+    color: chocolate;
+    margin: 0;
+}
+
+#TopTitle:hover {
+
 }
