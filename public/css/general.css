@@ -1,20 +1,15 @@
 body {
-    //background: saddlebrown;
-}
-
-div.bodytitle h1{
-    color: chocolate;
-    text-align: center;
     margin: 0;
+    padding: 0;
 }
 
 nav {
-    background: saddlebrown;
+    background-color: #7a3d13;
     text-align: center;
+    padding: 2%;
 }
 
-nav.titlebar h1{
-    color: chocolate;
+.titlebar > h1 {
     margin: 0;
 }
 
@@ -24,15 +19,26 @@ button{
 }
 
 #TopTitle {
-    color: chocolate;
+    color: papayawhip;
     margin: 0;
+    text-decoration: none;
 }
 
-#TopTitle:hover {
-
+.btn.inactive{
+    color: #7a3d13;
+    background-color: papayawhip;
+    border-color: black;
 }
 
-.inactive{
-    color: #3276b1;
-    background-color: #fff;
+.btn.active, .btn.inactive:hover, .btn.active:hover {
+    color: papayawhip;
+    background-color: #7a3d13;
+    border-color: black;
+}
+
+#registerTitle {
+    color: papayawhip;
+    background-color: #7a3d13;
+    text-align: center;
+    border: 7px double white;
 }

@@ -3,7 +3,7 @@ block headcontent
     script(src='./scripts/registerscripts.js')
 
 block bodycontent
-    div(class='jumbotron')
+    div(id='registerTitle' class='jumbotron')
         h1 Register to Restobar
     div(class='container-fluid')
         div(class='panel panel-default')
@@ -33,14 +33,15 @@ block bodycontent
                         label(for='birthday') * Birthday:
                         input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' name='birthday' /*required*/)
                     div(class='form-group')
-                        label Gender
+                        label * Gender
                         div(class='input-group')
                             div(id='radiobtn' class='btn-group')
                                 a(class='btn btn-primary active' data-toggle='gender' data-title='male') Male
                                 a(class='btn btn-primary inactive' data-toggle='gender' data-title='female') Female
+                                a(class='btn btn-primary inactive' data-toggle='gender' data-title='other') Other
                             input(type='hidden' name='gender' id='gender' value='male' required)
                     //-We choose a button with buttontype 'primary'.
                     div
-                        button(class='btn btn-primary' type='submit') Register
+                        button(class='btn btn-default' type='submit') Register
             div(class='panel-footer')
                 | Fields marked with * are required.

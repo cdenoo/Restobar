@@ -28,8 +28,8 @@ var RestobarApp = function () {
         var register = require('./routes/register');
         register(this);
 
-        var home = require('./routes/home');
-        home(this);
+        var login = require('./routes/login');
+        login(this);
     };
 
     this.initErrorHandling = function () {
