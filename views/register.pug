@@ -1,4 +1,7 @@
 extends basiclayout
+block headcontent
+    script(src='./scripts/registerscripts.js')
+
 block bodycontent
     div(class='jumbotron')
         h1 Register to Restobar
@@ -29,12 +32,13 @@ block bodycontent
                     div(class='form-group')
                         label(for='birthday') * Birthday:
                         input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' name='birthday' /*required*/)
-                    div
-                        input(type='radio' name='gender' id='male' value='male')
-                        label(for='male') Male
-                    div
-                        input(type='radio' name='gender' id='female' value='female')
-                        label(for='female') Female
+                    div(class='form-group')
+                        label Gender
+                        div(class='input-group')
+                            div(id='radiobtn' class='btn-group')
+                                a(class='btn btn-primary active' data-toggle='gender' data-title='male') Male
+                                a(class='btn btn-primary inactive' data-toggle='gender' data-title='female') Female
+                            input(type='hidden' name='gender' id='gender' value='male' required)
                     //-We choose a button with buttontype 'primary'.
                     div
                         button(class='btn btn-primary' type='submit') Register

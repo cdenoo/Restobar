@@ -31,3 +31,8 @@ button{
 #TopTitle:hover {
 
 }
+
+.inactive{
+    color: #3276b1;
+    background-color: #fff;
+}
