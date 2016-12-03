@@ -1,8 +1,22 @@
 extends basiclayout
 
 block headcontent
+    style.
+        #googlemap{
+            height: 500px;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        #googlemap * {
+            overflow: visible;
+        }
+
+    include includes/google-maps.pug
     script(src='./scripts/map.js')
 
 block bodycontent
     p Here you see the map of your neighbourhood.
-    div(id='googlemap')
+    #googlemap

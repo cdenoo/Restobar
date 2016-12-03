@@ -1,8 +1,8 @@
 var map, posMarker;
 
 function initMap(){
-    map = new google.maps.Map(document.getElementById('googlemap'), {
-        zoom: 17,
+    map = new google.maps.Map(document.getElementById("googlemap"), {
+        zoom: 13,
         mapTypeId: google.maps.MapTypeId.HYBRID
     });
 }
