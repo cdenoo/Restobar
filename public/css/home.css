@@ -1,0 +1,72 @@
+.navbar{
+    margin-bottom: 0;
+}
+
+#splashBlock{
+    height: 40em;
+
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+
+    background-image: url("/images/home.jpg");
+    background-size: cover;
+}
+
+#splashBlock #overlay{
+    background: rgba(255, 255, 255, 0.2);
+    width: 100%;
+    height: 100%;
+}
+
+#splashBlock #logoWrapper{
+    text-align: center;
+    padding-top: 5em;
+}
+
+#splashBlock #logoWrapper a{
+    text-decoration: none;
+    font-size: 3em;
+    color: #000;
+}
+
+#splashBlock #search{
+    width: 30em;
+    padding: 1em;
+    margin-left: -15em;
+
+    position: absolute;
+    top: 22em;
+    left: 50%;
+}
+
+h2{
+    text-align: center;
+}
+
+#spotlight a.venue{
+    padding: 0.25em;
+    max-width: 20em;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#spotlight a.venue:hover{
+    text-decoration: none;
+}
+
+#spotlight a.venue img{
+    max-height: 10em;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+
+    display: block;
+    margin: 0 auto;
+}
+
+#spotlight a.venue span{
+    display: block;
+    color: #000;
+    padding-top: 0.5em;
+}
