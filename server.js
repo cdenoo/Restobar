@@ -2,8 +2,10 @@ var express = require('express');
 var fs = require('fs');
 var bodyparser = require('body-parser');
 var favicon = require('serve-favicon');
+var pg = require('pg');
 
 var RestobarApp = function () {
+
     this.initVariables = function () {
         this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
         this._app = express();
@@ -55,12 +57,25 @@ var RestobarApp = function () {
         }
     };
 
+    this.initDB = function(){
+        var client = new pg.Client("postgres://qqfcgtgxjvjzds:t-LPRK0FYf03F6P75xNjRGYpCz@ec2-54-247-119-245.eu-west-1.compute.amazonaws.com:5432/d6gkp8aja1iue6?ssl=true");
+
+        // connect to our database
+        client.connect(function (err) {
+            if (err) throw err;
+        });
+
+        this.client = client;
+
+    };
+
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
         this.initViews();
         this.initRoutes();
         this.initErrorHandling();
+        this.initDB();
         this._app.listen(this._port);
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
