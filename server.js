@@ -27,20 +27,6 @@ var RestobarApp = function () {
         this._app.set('view engine', 'pug');
     };
 
-    this.initCookieHandler = function(){
-        this._app.use(function(req, res, next){
-
-            if(req.cookies.user){
-                this.userID = req.cookies.user;
-            }
-            else{
-                this.userID = -1;
-            }
-
-            next();
-        });
-    };
-
     this.initRoutes = function () {
         var index = require('./routes/index');
         index(this);
@@ -48,8 +34,15 @@ var RestobarApp = function () {
         var register = require('./routes/register');
         register(this);
 
-        var login = require('./routes/login');
-        login(this);
+        if(this.userID) {
+            //TODO make routes
+        }
+        else{
+            var login = require('./routes/login');
+            login(this);
+        }
+
+
     };
 
     this.initErrorHandling = function () {
@@ -69,7 +62,7 @@ var RestobarApp = function () {
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development'){
+        if(process.env.NODE_ENV === 'development' || true){
             console.warn(value);
         }
     };
@@ -90,7 +83,6 @@ var RestobarApp = function () {
         this.initVariables();
         this.initPublicDir();
         this.initViews();
-        this.initCookieHandler();
         this.initRoutes();
         this.initErrorHandling();
         this.initDB();

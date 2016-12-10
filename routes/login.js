@@ -3,12 +3,19 @@
  */
 module.exports = function (restobar) {
 
-    function renderLoginForm(res, errorMessages){
+    function renderLoginForm(req, res, errorMessages){
+
+        //Test if the user is actually logged in: redirect to the homepage
+        if(restobar.userID > 0){
+            res.redirect('/');
+            return;
+        }
+
         res.render('login', {title: 'Login', errors: errorMessages});
     }
 
     restobar._app.get('/login', function (req, res, next) {
-        renderLoginForm(res);
+        renderLoginForm(req, res);
     });
     restobar._app.post('/login', function (req, res, next) {
         console.log('Logged in with credentials: ' + JSON.stringify(req.body));
@@ -26,7 +33,7 @@ module.exports = function (restobar) {
         }
 
         if(errors.length){
-            renderLoginForm(res, errors);
+            renderLoginForm(req, res, errors);
             return;
         }
 
@@ -36,13 +43,11 @@ module.exports = function (restobar) {
             values: [username, password]
         }, function(err, result){
 
-            //res.status(500).send('Something Broke!');
-
             if(!result.rowCount){
                 //No results found
                 console.log("no rowse");
                 errors.push("We found no user with this username and password.");
-                renderLoginForm(res, errors);
+                renderLoginForm(req, res, errors);
                 return
             }
 
