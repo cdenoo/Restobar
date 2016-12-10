@@ -3,6 +3,7 @@ var fs = require('fs');
 var bodyparser = require('body-parser');
 var favicon = require('serve-favicon');
 var pg = require('pg');
+var cookieParser = require('cookie-parser');
 
 var RestobarApp = function () {
 
@@ -13,6 +14,7 @@ var RestobarApp = function () {
             extended: true
         }));
         this._app.use(bodyparser.json());
+        this._app.use(cookieParser());
         this._app.use(favicon('public/images/favicon.ico'));
     };
 
@@ -23,6 +25,20 @@ var RestobarApp = function () {
     this.initViews = function () {
         this._app.set('views', 'views');
         this._app.set('view engine', 'pug');
+    };
+
+    this.initCookieHandler = function(){
+        this._app.use(function(req, res, next){
+
+            if(req.cookies.user){
+                this.userID = req.cookies.user;
+            }
+            else{
+                this.userID = -1;
+            }
+
+            next();
+        });
     };
 
     this.initRoutes = function () {
@@ -42,6 +58,7 @@ var RestobarApp = function () {
         });
 
         this._app.use(function (err, req, res, next) {
+            console.log(err); //TODO better option to do this
             res.status(400).render('errorpage', {title: '400: Bad request'});
         });
 
@@ -73,6 +90,7 @@ var RestobarApp = function () {
         this.initVariables();
         this.initPublicDir();
         this.initViews();
+        this.initCookieHandler();
         this.initRoutes();
         this.initErrorHandling();
         this.initDB();
