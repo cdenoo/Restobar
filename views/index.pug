@@ -2,6 +2,7 @@ extends basiclayout
 
 block headcontent
     link(rel="stylesheet", href="css/home.css")
+    script(src="https://use.fontawesome.com/3feb0f1684.js") //TODO Needs to be removed once in master branch
 
 block headercontent
     //Remove the default header
@@ -31,31 +32,42 @@ block bodycontent
                     a.venue(href="#")
                         img(src="http://cdn.theculturetrip.com/wp-content/uploads/2016/02/restaurant-939435_960_720.jpg")
                         span
-                            | TITLE
+                            | Title
 
                 .col-md-3
                     a.venue(href="#")
                         img(src="http://www.nandos.com/sites/all/themes/nandos/images/restaurants/restaurant-carousel-1.jpg")
                         span
-                            | TITLE
+                            | Title
 
                 .col-md-3
                     a.venue(href="#")
                         img(src="https://s3.eu-central-1.amazonaws.com/restoathome/5710b2af64cfd.jpg")
                         span
-                            | TITLE
+                            | Title
 
                 .col-md-3
                     a.venue(href="#")
                         img(src="https://www.soelden.com/urlaub/images/SD/WI/headerbilder/aktivitaeten_header_restaurant,method=scale,prop=data,id=1200-510.jpg")
                         span
-                            | TITLE
+                            | Title
 
 
         section#personalRecommendations.row
             #neighbourhood.col-md-6
                 h3
                     | In the neighbourhood
+
+                a.venue.row
+                    span.imgContainer.col-xs-3
+                        img(src="http://cdn.theculturetrip.com/wp-content/uploads/2016/02/restaurant-939435_960_720.jpg")
+                    span.infoContainer.row-xs-9
+                        span.title
+                            | Title
+                        br
+                        span.stars
+                            | <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-half-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i>
+
 
 
             #favourites.col-md-6
