@@ -34,14 +34,13 @@ var RestobarApp = function () {
         var register = require('./routes/register');
         register(this);
 
-        if(this.userID) {
-            //TODO make routes
-        }
-        else{
-            var login = require('./routes/login');
-            login(this);
-        }
+        //Pages for registered users
+        var createVenue = require('./routes/create_venue.js');
+        createVenue(this);
 
+        //Pages for visitors
+        var login = require('./routes/login');
+        login(this);
 
     };
 

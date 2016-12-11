@@ -19,6 +19,10 @@ html
 					ul(class='nav navbar-nav')
 						li
 							a(href='/') Home
-						li
-							a(href='/login') Login
+						if userID > 0
+							li
+								a(href='/create-venue') Create a Venue
+						else
+							li
+								a(href='/login') Login
 			block bodycontent
