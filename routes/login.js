@@ -17,6 +17,7 @@ module.exports = function (restobar) {
     restobar._app.get('/login', function (req, res, next) {
         renderLoginForm(req, res);
     });
+
     restobar._app.post('/login', function (req, res, next) {
         console.log('Logged in with credentials: ' + JSON.stringify(req.body));
 
@@ -45,7 +46,6 @@ module.exports = function (restobar) {
 
             if(!result.rowCount){
                 //No results found
-                console.log("no rowse");
                 errors.push("We found no user with this username and password.");
                 renderLoginForm(req, res, errors);
                 return
@@ -53,7 +53,7 @@ module.exports = function (restobar) {
 
             var user = result.rows[0];
 
-            res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 15});
+            res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 60 * 12}); //A login is 12 hours valid
 
             res.render('login', {title: 'Logged in'});
 
