@@ -27,7 +27,8 @@ nav {
     text-align: center;
     border: 0.5em double white;
 
-    font-size: 300%
+    font-size: 300%;
+    word-wrap: break-word;
 }
 
 .jumbotron.pageTitle {
