@@ -1,3 +1,75 @@
-html{
+body {
+    margin: 0;
+    padding: 0;
+}
 
+nav {
+    background-color: #7a3d13;
+    text-align: center;
+    padding: 2%;
+}
+
+.btn.inactive{
+    color: #7a3d13;
+    background-color: papayawhip;
+    border-color: black;
+}
+
+.btn.active, .btn.inactive:hover, .btn.active:hover {
+    color: papayawhip;
+    background-color: #7a3d13;
+    border-color: black;
+}
+
+.pageTitle {
+    color: papayawhip;
+    background-color: #7a3d13;
+    text-align: center;
+    border: 0.5em double white;
+
+    font-size: 300%
+}
+
+.jumbotron.pageTitle {
+    padding: 0.6em;
+}
+
+.panel-body-content {
+    margin: 6%;
+    text-align: center;
+}
+
+.titlebar {
+    max-height: 10em;
+}
+
+.siteTopContainer {
+    text-align: center;
+    background-color: #7a3d13;
+    color:papayawhip;
+}
+
+.siteTopTitle {
+    font-size: 300%;
+}
+
+.siteTopTitle > a {
+    text-decoration: none;
+    color: papayawhip;
+    margin: 0;
+}
+
+.siteTopLogo {
+    height: 10em;
+}
+
+#siteLogo {
+    max-height: 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
 }

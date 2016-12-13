@@ -1,0 +1,81 @@
+extends basiclayout
+block headcontent
+    script(src='./scripts/registerscripts.js')
+
+block bodycontent
+    div(class='col-lg-4 col-centered')
+
+        div(class='col-lg-11 col-centered')
+            div(class='jumbotron pageTitle')
+                | Create a new Venue
+
+        div(class='container-fluid')
+            div(class='panel panel-default')
+                div(class='panel-body')
+
+                    if errors
+                        each error in errors
+                            .error #{error}
+
+                    form(class='registerForm' method='POST')
+
+                        div(class='form-group')
+                            label(for='type') * Type:
+                            select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
+                                each type in possibleVenueTypes
+                                    if type.selected === "selected"
+                                        option(value=type.type_id selected) #{type.type_name}
+                                    else
+                                        option(value=type.type_id) #{type.type_name}
+
+                        div(class='form-group')
+                            label(for='name') * Name:
+                            input(id='name' class='form-control' type='text' placeholder='Name' name='name' value=fields.name required)
+
+                        div(class='form-group')
+                            label(for='street') * Street:
+                            input(id='street' class='form-control' type='text' placeholder='Street' name='street' value=fields.street required)
+
+                        div(class='form-group')
+                            label(for='houseNumber') * House Number:
+                            input(id='houseNumber' class='form-control' type='text' placeholder='House Number' name='houseNumber' value=fields.houseNumber required)
+
+                        div(class='form-group')
+                            label(for='postalCode') * Postal Code:
+                            input(id='postalCode' class='form-control' type='text' placeholder='Postal Code' name='postalCode' value=fields.postalCode required)
+
+                        div(class='form-group')
+                            label(for='city') * City:
+                            input(id='city' class='form-control' type='text' placeholder='City' name='city' value=fields.city required)
+
+                        div(class='form-group')
+                            label(for='country') * Country:
+                            input(id='country' class='form-control' type='text' placeholder='Country' name='country' value=fields.country required)
+
+                        div(class='form-group')
+                            label(for='phoneNumber') Phone Number:
+                            input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phoneNumber)
+
+                        div(class='form-group')
+                            label(for='openingHours') Opening Hours:
+                            textarea(id='openingHours' class='form-control' name='openingHours') #{fields.openingHours}
+
+                        //TODO add facebook and twitter urls
+                        //div(class='form-group')
+                        //    label(for='facebookUrl') * Facebook URL:
+                        //    input(id='facebookUrl' class='form-control' type='url' placeholder='Facebook URL' name='cofacebookUrluntry')
+
+                        //div(class='form-group')
+                        //    label(for='twitterUrl') * Twitter URL:
+                        //    input(id='twitterUrl' class='form-control' type='url' placeholder='Twitter URL' name='twitterUrl')
+
+                        //TODO add email
+                        //div(class='form-group')
+                        //    label(for='email') * Email:
+                        //    input(id='email' class='form-control' type='email' placeholder='Email address' name='email' /*required*/)
+
+                        div
+                            button(class='btn btn-default' type='submit') Add Venue
+
+                div(class='panel-footer')
+                    | Fields marked with * are required.

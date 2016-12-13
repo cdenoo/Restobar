@@ -1,5 +1,5 @@
-module.exports = function (app) {
-    app.get('/', function (req, res, next) {
-        res.render('index', {title: 'Index'});
+module.exports = function (restobar) {
+    restobar._app.get('/', function (req, res, next) {
+        res.render('index', {title: 'Restobar', userID: req.cookies.user});
     });
 };
