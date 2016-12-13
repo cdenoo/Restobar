@@ -3,34 +3,65 @@
  */
 module.exports = function (restobar) {
 
-    function renderRegisterForm(req, res, errorMessages){
+    function renderRegisterForm(req, res, errorMessages) {
 
         //Test if the user is actually logged in: redirect to the homepage
-        if(restobar.userID > 0){
-            res.redirect('/');
-            return;
-        }
-
-        res.render('login', {title: 'Login', errors: errorMessages});
+        //if(restobar.userID > 0){
+        //    res.redirect('/');
+        //    return;
+        //}
+        res.render('register', {title: 'Register', errors: errorMessages});
     }
 
     restobar._app.get('/register', function (req, res, next) {
-        renderRegisterForm(req, res);
+        renderRegisterForm(req, res, '');
     });
 
     restobar._app.post('/register', function (req, res, next) {
         console.log('Registered with credentials: ' + JSON.stringify(req.body));
 
-        var username = req.body.username;
-        var password = req.body.password;
+        var username        = req.body.username;
+        var password        = req.body.password;
+        var confirmPassword = req.body.confirmPassword;
+        var firstName       = req.body.firstName;
+        var lastName        = req.body.lastName;
+        var email           = req.body.email;
+        var birthday        = req.body.birthday;
+
         var errors = [];
 
         if(!username){
             errors.push("Please enter a username.");
         }
+        else if (username.length < 6){
+            errors.push("Username must be at least 6 characters long.")
+        }
 
-        if(!password) {
+        if(!password){
             errors.push("Please enter a password.");
+        }
+
+        if(!confirmPassword){
+            errors.push("Please confirm your password.");
+        }
+        else if(password != confirmPassword){
+            errors.push("The password must be repeated.");
+        }
+
+        if(!firstName){
+            errors.push("Please enter your first name.");
+        }
+
+        if(!lastName){
+            errors.push("Please enter your last name.");
+        }
+
+        if(!email){
+            errors.push("Please enter your email address.");
+        }
+
+        if(!birthday){
+            errors.push("Please enter your birthday.");
         }
 
         if(errors.length){
@@ -39,11 +70,12 @@ module.exports = function (restobar) {
         }
 
         restobar.client.query({
-            name: "select_user",
-            text: "SELECT * FROM users WHERE username=$1::text AND password=$2::text",
-            values: [username, password]
+            name: "add_user",
+            text: "INSERT INTO users(username, password, first_name, last_name, email, birthday) " +
+                  "values($1, $2, $3, $4, $5, $6)",
+            values: [username, password, firstName, lastName, email, birthday]
         }, function(err, result){
-
+/*
             if(!result.rowCount){
                 //No results found
                 errors.push("We found no user with this username and password.");
@@ -54,10 +86,12 @@ module.exports = function (restobar) {
             var user = result.rows[0];
 
             res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 60 * 12}); //A login is 12 hours valid
-
-            res.render('login', {title: 'Logged in'});
+*/
 
         });
+
+        res.render('register_success', {title: 'Registered'});
+
 
 
     });
