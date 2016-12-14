@@ -45,18 +45,24 @@ var RestobarApp = function () {
     };
 
     this.initErrorHandling = function () {
-        this._app.use(function (req, res, next) {
-            res.status(404).render('errorpage', {title: '404: Page not found'});
-        });
-
         this._app.use(function (err, req, res, next) {
-            console.log(err); //TODO better option to do this
-            res.status(400).render('errorpage', {title: '400: Bad request'});
-        });
-
-        this._app.use(function(err, req, res, next){
-            console.error(err.stack);
-            res.status(500).send('Something bad happened!');
+            switch(err){
+                case 400:
+                    res.status(400);
+                    res.render('errorpage', {title: '400: Bad request'});
+                    break;
+                case 404:
+                    res.status(404);
+                    res.render('errorpage', {title: '404: Page not found'});
+                    break;
+                case 500:
+                    res.status(500);
+                    res.render('errorpage', {title: 'Something bad happened!'});
+                    break;
+                default:
+                    res.render('errorpage', {title: 'Unhandled error'});
+                    break;
+            }
         });
     };
 
