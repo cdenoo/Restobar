@@ -2,6 +2,12 @@ module.exports = function (restobar) {
 
     function renderCreateVenue(req, res, errorMessages){
 
+        if(!req.cookies.user){
+            //We will render the login page if the user is not logged in
+            var erros = array("You need to be logged in to view this page");
+            res.render('login', {title: 'login', errors: errors});
+        }
+
         restobar.client.query({
             name: "select_possible_venue_types",
             text: "SELECT * FROM possible_venue_types"
@@ -17,11 +23,9 @@ module.exports = function (restobar) {
             result.addRow(row);
         })
         .on('error', function(){
-            //TODO only show page if the user is logged in
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred.'],  fields: req.body});
+            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
         })
         .on('end', function(result){
-            //TODO only show page if the user is logged in
             res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
         });
     }
