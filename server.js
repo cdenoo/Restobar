@@ -7,6 +7,10 @@ var cookieParser = require('cookie-parser');
 
 var RestobarApp = function () {
 
+    this.user_other = 0;
+    this.user_male = 1;
+    this.user_female = 2;
+
     this.initVariables = function () {
         this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
         this._app = express();
