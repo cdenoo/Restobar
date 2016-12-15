@@ -4,6 +4,7 @@ var bodyparser = require('body-parser');
 var favicon = require('serve-favicon');
 var pg = require('pg');
 var cookieParser = require('cookie-parser');
+var googleMaps = require('@google/maps');
 
 var RestobarApp = function () {
 
@@ -46,6 +47,9 @@ var RestobarApp = function () {
 
     this.initErrorHandling = function () {
         this._app.use(function (err, req, res, next) {
+
+            console.log(err);
+
             switch(err){
                 case 400:
                     res.status(400);
@@ -84,6 +88,14 @@ var RestobarApp = function () {
 
     };
 
+    this.initGoogleMaps = function(){
+
+        this.googleMapsClient = googleMaps.createClient({
+            key: "AIzaSyAXfKp21e6rPXmjGDzCWRmptzvk5k041O4"
+        });
+
+    }
+
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
@@ -91,6 +103,7 @@ var RestobarApp = function () {
         this.initRoutes();
         this.initErrorHandling();
         this.initDB();
+        this.initGoogleMaps();
         this._app.listen(this._port);
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
