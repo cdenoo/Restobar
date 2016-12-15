@@ -10,6 +10,9 @@ block bodycontent
         div(class='container-fluid')
             div(class='panel panel-default')
                 div(class='panel-body')
+                    if errors
+                        each error in errors
+                            .error #{error}
                     //TODO replace /*required*/ with required
                     form(class='registerForm' method='POST')
                         div(class='form-group')
