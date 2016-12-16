@@ -2,6 +2,12 @@ module.exports = function (restobar) {
 
     function renderCreateVenue(req, res, errorMessages){
 
+        if(!req.cookies.user){
+            //We will render the login page if the user is not logged in
+            var erros = array("You need to be logged in to view this page");
+            res.render('login', {title: 'login', errors: errors});
+        }
+
         restobar.client.query({
             name: "select_possible_venue_types",
             text: "SELECT * FROM possible_venue_types"
@@ -17,11 +23,9 @@ module.exports = function (restobar) {
             result.addRow(row);
         })
         .on('error', function(){
-            //TODO only show page if the user is logged in
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred.'],  fields: req.body});
+            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
         })
         .on('end', function(result){
-            //TODO only show page if the user is logged in
             res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
         });
     }
@@ -71,44 +75,73 @@ module.exports = function (restobar) {
             return;
         }
 
-        restobar.client.query({
-            name: "create_venue",
-            text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, phone_number, opening_hours, owner_id) " +
-                    "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7::text, $8::text, $9)",
-            values: [name, street, houseNumber, postalCode, city, country, phoneNumber, openingHours, req.cookies.user]
-        }, function(err, result){
+        //Get the coordinates of google
+        restobar.googleMapsClient.geocode({
+            address: street + ' ' + houseNumber + ', ' + postalCode + ' ' +  city + ', ' + country
+        }, function(err, response) {
 
-            if(err){
-                errors.push("Something went wrong. Please try again");
-                console.warn("Database error: " + err);
-                renderCreateVenue(req, res, errors);
-                return
+            var latitude;
+            var longitude;
+
+            if (!err) {
+                var results = response.json.results;
+                var firstResultCoordinates = results[0].geometry.location;
+
+                latitude = firstResultCoordinates.lat;
+                longitude = firstResultCoordinates.lng;
             }
 
-            //Everything went well. Insert all the types now.
-            req.body.type.forEach(function(type){
-                restobar.client.query({
-                    name: "link_venue_and_type",
-                    text: "INSERT INTO venue_types (venue_id, type_id) " +
-                    "VALUES($1, $2)",
-                    values: [result.oid, type]
-                }, function(typeErr, typeResult){
+            if(!latitude){
+                latitude = -1
+            }
 
-                    if(err){
-                        errors.push("Something went wrong while saving the venue type. All other data has been saved.");
-                        //TODO open render modify venue form instead, as all other information has been saved.
-                        renderCreateVenue(req, res, errors);
-                        return
-                    }
+            if(longitude){
+                longitude = -1;
+            }
 
-                });
+            restobar.client.query({
+                name: "create_venue",
+                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coord, y_coord, phone_number, opening_hours, owner_id) " +
+                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11)",
+                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.cookies.user]
+            }, function(err, result){
+
+                if(err){
+                    errors.push("Something went wrong. Please try again");
+                    console.warn("Database error: " + err);
+                    renderCreateVenue(req, res, errors);
+                    return
+                }
+
+                //Everything went well. Insert all the types now.
+                insertVenueTypes(req, res, errors, result.oid);
+
             });
+        });
+    });
 
-            //Everything went ok: render the venue page
-            res.render('index', {title: 'Venue', userID: req.cookies.user});
+    function insertVenueTypes(req, res, errors, venueID){
 
+        //Insert each type of venue
+        req.body.type.forEach(function(type){
+            restobar.client.query({
+                name: "link_venue_and_type",
+                text: "INSERT INTO venue_types (venue_id, type_id) " +
+                "VALUES($1, $2)",
+                values: [venueID, type]
+            }, function(typeErr, typeResult){
+
+                if(err){
+                    errors.push("Something went wrong while saving the venue type. All other data has been saved.");
+                    //TODO open render modify venue form instead, as all other information has been saved.
+                    renderCreateVenue(req, res, errors);
+                    return
+                }
+
+            });
         });
 
-
-    });
+        //Everything went ok: render the venue page
+        res.render('venue', {title: 'Venue', userID: req.cookies.user, venueID: venueID});
+    }
 };

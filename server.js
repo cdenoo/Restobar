@@ -4,6 +4,7 @@ var bodyparser = require('body-parser');
 var favicon = require('serve-favicon');
 var pg = require('pg');
 var cookieParser = require('cookie-parser');
+var googleMaps = require('@google/maps');
 
 var RestobarApp = function () {
 
@@ -42,6 +43,9 @@ var RestobarApp = function () {
         var createVenue = require('./routes/create_venue.js');
         createVenue(this);
 
+        var venue = require('./routes/venue.js');
+        venue(this);
+
         //Pages for visitors
         var login = require('./routes/login');
         login(this);
@@ -49,18 +53,27 @@ var RestobarApp = function () {
     };
 
     this.initErrorHandling = function () {
-        this._app.use(function (req, res, next) {
-            res.status(404).render('errorpage', {title: '404: Page not found'});
-        });
-
         this._app.use(function (err, req, res, next) {
-            console.log(err); //TODO better option to do this
-            res.status(400).render('errorpage', {title: '400: Bad request'});
-        });
 
-        this._app.use(function(err, req, res, next){
-            console.error(err.stack);
-            res.status(500).send('Something bad happened!');
+            console.log(err);
+
+            switch(err){
+                case 400:
+                    res.status(400);
+                    res.render('errorpage', {title: '400: Bad request'});
+                    break;
+                case 404:
+                    res.status(404);
+                    res.render('errorpage', {title: '404: Page not found'});
+                    break;
+                case 500:
+                    res.status(500);
+                    res.render('errorpage', {title: 'Something bad happened!'});
+                    break;
+                default:
+                    res.render('errorpage', {title: 'Unhandled error'});
+                    break;
+            }
         });
     };
 
@@ -82,6 +95,14 @@ var RestobarApp = function () {
 
     };
 
+    this.initGoogleMaps = function(){
+
+        this.googleMapsClient = googleMaps.createClient({
+            key: "AIzaSyAXfKp21e6rPXmjGDzCWRmptzvk5k041O4"
+        });
+
+    }
+
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
@@ -89,6 +110,7 @@ var RestobarApp = function () {
         this.initRoutes();
         this.initErrorHandling();
         this.initDB();
+        this.initGoogleMaps();
         this._app.listen(this._port);
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
