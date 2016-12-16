@@ -53,6 +53,8 @@ module.exports = function (restobar) {
 
             var user = result.rows[0];
 
+            //console.log(user)
+
             res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 60 * 12}); //A login is 12 hours valid
 
             res.render('login', {title: 'Logged in'});

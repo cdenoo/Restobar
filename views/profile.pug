@@ -1,0 +1,40 @@
+extends basiclayout
+
+block bodycontent
+    div(class='col-lg-4 col-centered')
+        div(class='col-lg-11 col-centered')
+            div(class='jumbotron pageTitle')
+                | My profile
+        div(class='container-fluid')
+            div(class='panel panel-default')
+                div(class='panel-body')
+                    //TODO replace /*required*/ with required
+                    form(class='profileForm' method='POST')
+                        div(class='form-group')
+                            label(for='username') Username:
+                            input(id='username' class='form-control' type='text' placeholder='Username' name='username')
+                        div(class='form-group')
+                            label(for='pw') Password:
+                            input(id='pw' class='form-control' type='password' placeholder='Password' name='password')
+                        div(class='form-group')
+                            label(for='firstName') First name:
+                            input(id='firstName' class='form-control' type='text' placeholder='First name' name='firstName')
+                        div(class='form-group')
+                            label(for='lastName') Last name:
+                            input(id='lastName' class='form-control' type='text' placeholder='Last name' name='lastName')
+                        div(class='form-group')
+                            label(for='email') Email:
+                            input(id='email' class='form-control' type='email' placeholder='Email address' name='email')
+                        div(class='form-group')
+                            label(for='birthday') Birthday:
+                            input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' name='birthday')
+                        div(class='form-group')
+                            label Gender
+                            div(class='input-group')
+                                div(id='radiobtn' class='btn-group')
+                                    a(class='btn btn-primary active' data-toggle='gender' data-title='male') Male
+                                    a(class='btn btn-primary inactive' data-toggle='gender' data-title='female') Female
+                                    a(class='btn btn-primary inactive' data-toggle='gender' data-title='other') Other
+                                input(type='hidden' name='gender' id='gender' value='male' required)
+                        div
+                            button(class='btn btn-default' type='submit') Save

@@ -42,6 +42,9 @@ var RestobarApp = function () {
         var createVenue = require('./routes/create_venue.js');
         createVenue(this);
 
+        var profile = require('./routes/profile');
+        profile(this);
+
         //Pages for visitors
         var login = require('./routes/login');
         login(this);
