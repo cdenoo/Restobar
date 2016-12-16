@@ -45,7 +45,6 @@ var RestobarApp = function () {
         //Pages for visitors
         var login = require('./routes/login');
         login(this);
-
     };
 
     this.initErrorHandling = function () {
