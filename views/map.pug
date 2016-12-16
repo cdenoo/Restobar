@@ -15,8 +15,13 @@ block headcontent
         }
 
     include includes/google-maps.pug
-    script(src='./scripts/map.js')
+    script(src='/scripts/map.js')
 
 block bodycontent
     p Here you see the map of your neighbourhood.
     #googlemap
+
+    script.
+        $(function(){
+            createMap(true);
+        });

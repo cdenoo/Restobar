@@ -2,6 +2,10 @@ extends basiclayout
 
 block headcontent
     style.
+        html, body {
+            height: 100%;
+        }
+
         h1{
             text-align: center;
             font-size: 3em;
@@ -22,6 +26,16 @@ block headcontent
             margin: 0.25em 0;
         }
 
+        #googlemap {
+            height: 500px;
+        }
+
+        #googlemap * {
+            overflow: visible;
+        }
+
+    include includes/google-maps.pug
+    script(src='/scripts/map.js')
 
 
 block bodycontent
@@ -73,3 +87,42 @@ block bodycontent
                 .tag Opening Hours:
                 div !{venueData.opening_hours.replace(/\n/g, '<br/>')}
 
+    #googlemap
+
+    .col-md-6.col-lg-4.col-centered
+        h2 Reviews
+
+        .review
+            .writer
+                if noRating
+                    - var n = 1;
+                    while n <= 5
+                        i.fa.fa-question-circle-o(aria-hidden='true')
+                else
+                    - var n = 1;
+                    while n <= rating
+                        - n++;
+                        i.fa.fa-star(aria-hidden='true')
+
+                    - var showHalfStar = ((rating.toFixed(1) % 0.5) % 2) == 0
+                    if showHalfStar
+                        i.fa.fa-star-half-o(aria-hidden='true')
+
+                    - var starsLeft = 5 - n;
+                    while starsLeft >= 1
+                        - starsLeft--;
+                        i.fa.fa-star-o(aria-hidden='true')
+
+                span.name Thijs Spinoy
+
+                span.date November 11, 2016
+
+            .content
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque lorem eu risus eleifend ultrices. Nam iaculis ex urna, tincidunt dapibus nibh faucibus sed. Vestibulum condimentum venenatis odio, vel dignissim elit venenatis vitae. Nam quis dapibus orci. Nam sem tellus, venenatis vel aliquam et, pharetra ac metus. Curabitur hendrerit ipsum et enim sagittis, in tristique ante pharetra. Praesent blandit molestie nisi quis convallis. Praesent condimentum blandit orci vel commodo. Ut iaculis blandit consectetur. Duis pellentesque arcu in leo tincidunt mattis ut ut erat. Donec imperdiet ipsum a ante euismod, id accumsan magna consequat. Fusce in odio arcu. Cras dictum purus magna, non porttitor neque tempus eget. Sed et bibendum enim. Maecenas eu maximus orci. Fusce egestas dui at dolor aliquam tincidunt.
+    - console.log(venueData.y_coordinate);
+    script.
+         $(function(){
+            createMap(false);
+            createMarker(#{venueData.y_coordinate}, #{venueData.x_coordinate}, '#{venueData.name}');
+            setMapCenter(#{venueData.y_coordinate}, #{venueData.x_coordinate});
+         });

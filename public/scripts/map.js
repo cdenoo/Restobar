@@ -7,18 +7,27 @@ function initMap(){
     });
 }
 
-function setCurrentPosition(pos){
-    posMarker = new google.maps.Marker({
+function createMarker(latitude, longitude, title){
+    new google.maps.Marker({
         map:map,
         position: new google.maps.LatLng(
-            pos.coords.latitude,
-            pos.coords.longitude
+            latitude,
+            longitude
         ),
-        title: 'Current Location'
+        title: title
     });
+}
+
+function setCurrentPosition(pos){
+    posMarker = createMarker(pos.coords.latitude, pos.coords.longitude, 'Current Location');
+
+    setMapCenter(pos.coords.latitude, pos.coords.longitude);
+}
+
+function setMapCenter(latitude, longitude){
     map.panTo(new google.maps.LatLng(
-        pos.coords.latitude,
-        pos.coords.longitude
+        latitude,
+        longitude
     ));
 }
 
@@ -44,13 +53,10 @@ function displayandwatch(position){
     watchCurrentPosition(position);
 }
 
-function initLocProc() {
+function createMap(showUserLocation) {
     initMap();
-    if(navigator.geolocation){
+
+    if(navigator.geolocation && showUserLocation){
         navigator.geolocation.getCurrentPosition(displayandwatch);
     }
 }
-
-$(document).ready(function () {
-    initLocProc();
-});
