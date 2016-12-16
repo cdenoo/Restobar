@@ -12,22 +12,22 @@ block bodycontent
                     form(class='profileForm' method='POST')
                         div(class='form-group')
                             label(for='username') Username:
-                            input(id='username' class='form-control' type='text' placeholder='Username' name='username')
+                            input(id='username' class='form-control' type='text' placeholder='Username' value=fields.username name='username')
                         div(class='form-group')
                             label(for='pw') Password:
-                            input(id='pw' class='form-control' type='password' placeholder='Password' name='password')
+                            input(id='pw' class='form-control' type='password' placeholder='Password' value=fields.password name='password')
                         div(class='form-group')
                             label(for='firstName') First name:
-                            input(id='firstName' class='form-control' type='text' placeholder='First name' name='firstName')
+                            input(id='firstName' class='form-control' type='text' placeholder='First name' value=fields.first_name name='firstName')
                         div(class='form-group')
                             label(for='lastName') Last name:
-                            input(id='lastName' class='form-control' type='text' placeholder='Last name' name='lastName')
+                            input(id='lastName' class='form-control' type='text' placeholder='Last name' value=fields.last_name name='lastName')
                         div(class='form-group')
                             label(for='email') Email:
-                            input(id='email' class='form-control' type='email' placeholder='Email address' name='email')
+                            input(id='email' class='form-control' type='email' placeholder='Email address' value=fields.email name='email')
                         div(class='form-group')
                             label(for='birthday') Birthday:
-                            input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' name='birthday')
+                            input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' value=fields.birthday name='birthday')
                         div(class='form-group')
                             label Gender
                             div(class='input-group')

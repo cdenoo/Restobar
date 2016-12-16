@@ -95,11 +95,12 @@ module.exports = function (restobar) {
         }
 
         if(errors.length){
-            renderRegisterForm(req, res, errors);
+            //renderRegisterForm(req, res, errors);
+            res.render('register', {title: 'Register', errors: errorMessages, fields: req.body});
             return;
         }
 
-        var query = restobar.client.query({
+        restobar.client.query({
             name: "add_user",
             text: "INSERT INTO users(username, password, first_name, last_name, email, birthday, gender) " +
                   "values($1, $2, $3, $4, $5, $6, $7)",
@@ -120,16 +121,6 @@ module.exports = function (restobar) {
              res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 60 * 12}); //A login is 12 hours valid
              */
             res.render('register_success', {title: 'Registered'});
-
-        });
-
-        //var query = restobar.client.query('SELECT * FROM users');
-        query.on('error', function(error) {
-            console.log(error);
-        });
-
-        query.on('end', function(row, result) {
-            console.log(result);
         });
     });
 };

@@ -1,22 +1,19 @@
 module.exports = function (restobar) {
-    restobar._app.get('/profile', function (req, res, next) {
-        var information = [];
-        /*
+    function renderShowProfile(req, res){
         restobar.client.query({
-            name: "select_user",
-            text: "SELECT * FROM users WHERE user_id=3"
-        }, function(err, result){
-            //console.log(err);
-            //console.log(result);
-
-            information = result;
-            console.log(["information = ", information]);
-            console.log(["result = ", result]);
-
-            res.render('profile', {title: 'My profile'});
-
+            name: "select_user_for_profilepage",
+            text: "SELECT * FROM users WHERE user_id=$1",
+            values: [req.cookies.user]
+        })
+        .on('error', function(error){
+            res.render('profile', {title: 'My profile', userID: req.cookies.user, errors: ['An error occurred.'], fields: req.body});
+        })
+        .on('end', function(result){
+            res.render('profile', {title: 'My profile', userID: req.cookies.user, fields: result.rows[0]});
         });
-        */
-        res.render('profile', {title: 'My profile', userID: req.cookies.user});
+    }
+
+    restobar._app.get('/profile', function (req, res, next) {
+        renderShowProfile(req, res);
     });
 };
