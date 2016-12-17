@@ -29,7 +29,7 @@ module.exports = function (restobar) {
         var birthday        = req.body.birthday;
         var gender          = req.body.gender;
 
-        var str; //Een string waarmee we gaan controleren of de input van het juiste type is.
+        var str; //Een string waarmee we gaan controleren of de input van het juiste type is (met Regex).
 
         var errors = [];
 
@@ -95,8 +95,8 @@ module.exports = function (restobar) {
         }
 
         if(errors.length){
-            //renderRegisterForm(req, res, errors);
-            res.render('register', {title: 'Register', errors: errorMessages, fields: req.body});
+            renderRegisterForm(req, res, errors);
+            //res.render('register', {title: 'Register', errors: errorMessages, fields: req.body});
             return;
         }
 
