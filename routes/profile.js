@@ -19,10 +19,11 @@ module.exports = function (restobar) {
 
     restobar._app.post('/profile', function (req, res, next) {
         var username        = req.body.username;
+        var password        = req.body.password;
+        var confirmPassword = req.body.confirmPassword;
         var firstName       = req.body.firstName;
         var lastName        = req.body.lastName;
         var email           = req.body.email;
-        var birthday        = req.body.birthday;
         var gender          = req.body.gender;
 
         var str; //Een string waarmee we gaan controleren of de input van het juiste type is (met Regex).
@@ -34,6 +35,17 @@ module.exports = function (restobar) {
         }
         else if (username.length < 6){
             errors.push("Username must be at least 6 characters long.")
+        }
+
+        if(!password){
+            errors.push("Please enter a password.");
+        }
+
+        if(!confirmPassword){
+            errors.push("Please confirm your password.");
+        }
+        else if(password != confirmPassword){
+            errors.push("The password must be repeated.");
         }
 
         if(!firstName){
@@ -55,18 +67,6 @@ module.exports = function (restobar) {
             }
         }
 
-        if(!birthday){
-            errors.push("Please enter your birthday.");
-        }
-        else{
-            //Calculate the date/time object for the birthday.
-            var birthdayArray = birthday.split("/");
-            var birthdayDate  = new Date();
-            birthdayDate.setDate(birthdayArray[0]);
-            birthdayDate.setMonth(birthdayArray[1]);
-            birthdayDate.setYear(birthdayArray[2]);
-        }
-
         switch(gender){
             case "male":
                 gender = restobar.user_male;
@@ -86,15 +86,15 @@ module.exports = function (restobar) {
 
         restobar.client.query({
             name: "update_user",
-            text: "UPDATE users SET username=$2, first_name=$3, last_name=$4, email=$5, birthday=$6, gender=$7 WHERE user_id=$1",
-            values: [req.cookies.user, username, firstName, lastName, email, birthdayDate.getMilliseconds(), gender]
+            text: "UPDATE users SET username=$2, password=$3, first_name=$4, last_name=$5, email=$6, gender=$7 WHERE user_id=$1",
+            values: [req.cookies.user, username, password, firstName, lastName, email, gender]
         })
         .on('error', function(error) {
             console.log(error);
-            res.render('profile', {title: 'My profile', errors: ['An error occurred.'], fields: req.body});
+            res.render('profile', {title: 'My profile', errors: errors, fields: req.body});
         })
-        .on('end', function(result){
-            res.render('profile', {title: 'Profile updated', fields: result.rows[0]});
+        .on('end', function(){
+            renderShowProfile(req, res);
         })
 
     });
