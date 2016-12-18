@@ -26,8 +26,6 @@ module.exports = function (restobar) {
         var email           = req.body.email;
         var gender          = req.body.gender;
 
-        var str; //Een string waarmee we gaan controleren of de input van het juiste type is (met Regex).
-
         var errors = [];
 
         if(!username){
@@ -60,9 +58,8 @@ module.exports = function (restobar) {
             errors.push("Please enter your email address.");
         }
         else{
-            str = email;
             var pattern = new RegExp("@");
-            if(!pattern.test(str)){
+            if(!pattern.test(email)){
                 errors.push("Please enter a valid email address.");
             }
         }
