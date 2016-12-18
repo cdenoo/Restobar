@@ -65,19 +65,12 @@ block headcontent
 
 block bodycontent
 
-    - var noRating = false;
-    - var rating = 3.5; //TODO replace with real rating
-
     .col-md-6.col-lg-4.col-centered
         h1
             span.name
                 | #{venueData.name}
 
-            if venueData.noRating
-                - var n = 1;
-                while n <= 5
-                    i.fa.fa-question-circle-o(aria-hidden='true')
-            else
+            unless venueData.noRating
                 - var n = 1;
                 while n <= venueData.rating
                     - n++;
