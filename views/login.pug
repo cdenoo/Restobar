@@ -11,7 +11,7 @@ block bodycontent
                     div(class='panel-body-content')
                         if errors
                             each error in errors
-                                .error #{error}
+                                .error.bg-danger #{error}
                         h3 I have an account
                         form(class='form-horizontal' method='POST')
                             div(class='form-group')
@@ -21,5 +21,5 @@ block bodycontent
                             button(type='submit' class='btn btn-default inactive') Log in
                     div(class='panel-body-content')
                         h3 I'm new here
-                        p It takes only a few moments to register. Press Sign Up and enjoy!
+                        p It takes only a few moments to register. <br> Press Sign Up and enjoy!
                         a(class='btn btn-default inactive' href='/register') Register
