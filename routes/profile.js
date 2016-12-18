@@ -14,10 +14,22 @@ module.exports = function (restobar) {
     }
 
     restobar._app.get('/profile', function (req, res, next) {
+
+        if(!req.cookies.user){
+            res.redirect('/login');
+            return;
+        }
+
         renderShowProfile(req, res);
     });
 
     restobar._app.post('/profile', function (req, res, next) {
+
+        if(!req.cookies.user){
+            res.redirect('/login');
+            return;
+        }
+
         var username        = req.body.username;
         var password        = req.body.password;
         var confirmPassword = req.body.confirmPassword;
