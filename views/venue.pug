@@ -117,12 +117,16 @@ block bodycontent
     .col-md-6.col-lg-4.col-centered
         h2 Reviews
 
-        p(style="text-align: center;")
-            a.btn.btn-default(href="/create-review/#{venueData.venue_id}") Add a Review
+        if userID
+            p(style="text-align: center;")
+                a.btn.btn-default(href="/create-review/#{venueData.venue_id}") Add a Review
 
         - nmbReviews = reviews.length
         unless nmbReviews
-            p#noReviews We found no reviews for this venue. Add one now!
+            if userID
+                p#noReviews We found no reviews for this venue. Add one now!
+            else
+                p#noReviews We found no reviews for this venue. Log in or register to add one!
 
         each review in reviews
             .review
