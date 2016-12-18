@@ -73,17 +73,17 @@ block bodycontent
             span.name
                 | #{venueData.name}
 
-            if noRating
+            if venueData.noRating
                 - var n = 1;
                 while n <= 5
                     i.fa.fa-question-circle-o(aria-hidden='true')
             else
                 - var n = 1;
-                while n <= rating
+                while n <= venueData.rating
                     - n++;
                     i.fa.fa-star(aria-hidden='true')
 
-                - var showHalfStar = ((rating.toFixed(1) % 0.5) % 2) == 0
+                - var showHalfStar = ((venueData.rating.toFixed(1) % 0.5) % 2) == 0
                 if showHalfStar
                     i.fa.fa-star-half-o(aria-hidden='true')
 
@@ -131,24 +131,19 @@ block bodycontent
         each review in reviews
             .review
                 .writer
-                    if review.rating
-                        - var n = 1;
-                        while n <= 5
-                            i.fa.fa-question-circle-o(aria-hidden='true')
-                    else
-                        - var n = 1;
-                        while n <= review.rating
-                            - n++;
-                            i.fa.fa-star(aria-hidden='true')
+                    - var n = 1;
+                    while n <= review.rating
+                        - n++;
+                        i.fa.fa-star(aria-hidden='true')
 
-                        - var showHalfStar = ((review.rating.toFixed(1) % 0.5) % 2) == 0
-                        if showHalfStar
-                            i.fa.fa-star-half-o(aria-hidden='true')
+                    - var showHalfStar = ((review.rating.toFixed(1) % 0.5) % 2) == 0
+                    if showHalfStar
+                        i.fa.fa-star-half-o(aria-hidden='true')
 
-                        - var starsLeft = 5 - n;
-                        while starsLeft >= 1
-                            - starsLeft--;
-                            i.fa.fa-star-o(aria-hidden='true')
+                    - var starsLeft = 5 - n;
+                    while starsLeft >= 1
+                        - starsLeft--;
+                        i.fa.fa-star-o(aria-hidden='true')
 
                     span.name #{review.first_name} #{review.last_name}
 
