@@ -19,7 +19,6 @@ module.exports = function (restobar) {
     });
 
     restobar._app.post('/login', function (req, res, next) {
-        console.log('Logged in with credentials: ' + JSON.stringify(req.body));
 
         var username = req.body.username;
         var password = req.body.password;
@@ -52,8 +51,6 @@ module.exports = function (restobar) {
             }
 
             var user = result.rows[0];
-
-            //console.log(user)
 
             res.cookie('user', user.user_id, {maxAge: 1000 * 60 * 60 * 12}); //A login is 12 hours valid
 
