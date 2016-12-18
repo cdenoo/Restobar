@@ -142,6 +142,6 @@ module.exports = function (restobar) {
         });
 
         //Everything went ok: render the venue page
-        res.render('venue', {title: 'Venue', userID: req.cookies.user, venueID: venueID});
+        res.redirect('venue/' + venueID);
     }
 };
