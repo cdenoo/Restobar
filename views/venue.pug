@@ -27,12 +27,22 @@ block headcontent
         #googlemap * {
             overflow: visible;
         }
+        #noReviews{
+            text-align: center;
+            background-color: #7a3d13;
+            padding: 0.5em;
+            color: #FFF;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
         .review{
-            -webkit-border-radius: 20px;
-            -moz-border-radius: 20px;
-            border-radius: 20px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
             border: solid 1px #7a3d13;
             overflow: hidden;
+            margin-bottom: 2em;
         }
         .review .writer{
             background-color: #7a3d13;
@@ -55,25 +65,18 @@ block headcontent
 
 block bodycontent
 
-    - var noRating = false;
-    - var rating = 3.5; //TODO replace with real rating
-
     .col-md-6.col-lg-4.col-centered
         h1
             span.name
                 | #{venueData.name}
 
-            if noRating
+            unless venueData.noRating
                 - var n = 1;
-                while n <= 5
-                    i.fa.fa-question-circle-o(aria-hidden='true')
-            else
-                - var n = 1;
-                while n <= rating
+                while n <= venueData.rating
                     - n++;
                     i.fa.fa-star(aria-hidden='true')
 
-                - var showHalfStar = ((rating.toFixed(1) % 0.5) % 2) == 0
+                - var showHalfStar = ((venueData.rating.toFixed(1) % 0.5) % 2) == 0
                 if showHalfStar
                     i.fa.fa-star-half-o(aria-hidden='true')
 
@@ -107,19 +110,26 @@ block bodycontent
     .col-md-6.col-lg-4.col-centered
         h2 Reviews
 
-        .review
-            .writer
-                if noRating
+        if userID
+            p(style="text-align: center;")
+                a.btn.btn-default(href="/create-review/#{venueData.venue_id}") Add a Review
+
+        - nmbReviews = reviews.length
+        unless nmbReviews
+            if userID
+                p#noReviews We found no reviews for this venue. Add one now!
+            else
+                p#noReviews We found no reviews for this venue. Log in or register to add one!
+
+        each review in reviews
+            .review
+                .writer
                     - var n = 1;
-                    while n <= 5
-                        i.fa.fa-question-circle-o(aria-hidden='true')
-                else
-                    - var n = 1;
-                    while n <= rating
+                    while n <= review.rating
                         - n++;
                         i.fa.fa-star(aria-hidden='true')
 
-                    - var showHalfStar = ((rating.toFixed(1) % 0.5) % 2) == 0
+                    - var showHalfStar = ((review.rating.toFixed(1) % 0.5) % 2) == 0
                     if showHalfStar
                         i.fa.fa-star-half-o(aria-hidden='true')
 
@@ -128,16 +138,18 @@ block bodycontent
                         - starsLeft--;
                         i.fa.fa-star-o(aria-hidden='true')
 
-                span.name Thijs Spinoy
+                    span.name #{review.first_name} #{review.last_name}
 
-                span.date November 11, 2016
+                    span.date #{review.formatted_date}
 
-            .content
-                p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque lorem eu risus eleifend ultrices. Nam iaculis ex urna, tincidunt dapibus nibh faucibus sed. Vestibulum condimentum venenatis odio, vel dignissim elit venenatis vitae. Nam quis dapibus orci. Nam sem tellus, venenatis vel aliquam et, pharetra ac metus. Curabitur hendrerit ipsum et enim sagittis, in tristique ante pharetra. Praesent blandit molestie nisi quis convallis. Praesent condimentum blandit orci vel commodo. Ut iaculis blandit consectetur. Duis pellentesque arcu in leo tincidunt mattis ut ut erat. Donec imperdiet ipsum a ante euismod, id accumsan magna consequat. Fusce in odio arcu. Cras dictum purus magna, non porttitor neque tempus eget. Sed et bibendum enim. Maecenas eu maximus orci. Fusce egestas dui at dolor aliquam tincidunt.
-    - console.log(venueData.y_coordinate);
+                .content #{review.comments}
+
     script.
          $(function(){
             createMap(false);
             createMarker(#{venueData.y_coordinate}, #{venueData.x_coordinate}, '#{venueData.name}');
             setMapCenter(#{venueData.y_coordinate}, #{venueData.x_coordinate});
+            map.setOptions({ //We don't want the map to zoom on scroll
+                scrollwheel: false
+            });
          });
