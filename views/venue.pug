@@ -27,6 +27,9 @@ block headcontent
         #googlemap * {
             overflow: visible;
         }
+        #rateVenue{
+            margin-bottom: 2.5em;
+        }
         #noReviews{
             text-align: center;
             background-color: #7a3d13;
@@ -66,6 +69,11 @@ block headcontent
 block bodycontent
 
     .col-md-6.col-lg-4.col-centered
+
+        if errors
+            each error in errors
+                .error.bg-danger #{error}
+
         h1
             span.name
                 | #{venueData.name}
@@ -108,11 +116,31 @@ block bodycontent
     #googlemap
 
     .col-md-6.col-lg-4.col-centered
-        h2 Reviews
 
         if userID
-            p(style="text-align: center;")
-                a.btn.btn-default(href="/create-review/#{venueData.venue_id}") Add a Review
+
+            form#rateVenue(method='POST').col-sm-10.col-md-8.col-centered
+                h2(style="text-align: center;") Review #{venueData.name}
+
+                div(class='form-group')
+                    label(for='rating') Rating:
+                    select(class='form-control' name='rating')
+                        - var n=0;
+                        while n <= 5
+                            if fields.rating == n
+                                option(value=n selected) #{n} Stars
+                            else
+                                option(value=n) #{n} Stars
+                            - n++;
+
+                div(class='form-group')
+                    label(for='comments') Comments:
+                    textarea(id='comments' class='form-control' name='comments' style="height: 7.5em;") #{fields.comments}
+
+                div(style="text-align: center;")
+                    button(class='btn btn-default' type='submit') Add Rating
+
+        h2(style="text-align: center;") Reviews
 
         - nmbReviews = reviews.length
         unless nmbReviews
@@ -128,10 +156,6 @@ block bodycontent
                     while n <= review.rating
                         - n++;
                         i.fa.fa-star(aria-hidden='true')
-
-                    - var showHalfStar = ((review.rating.toFixed(1) % 0.5) % 2) == 0
-                    if showHalfStar
-                        i.fa.fa-star-half-o(aria-hidden='true')
 
                     - var starsLeft = 5 - n;
                     while starsLeft >= 1
