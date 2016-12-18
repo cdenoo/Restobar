@@ -19,7 +19,6 @@ module.exports = function (restobar) {
     });
 
     restobar._app.post('/login', function (req, res, next) {
-        console.log('Logged in with credentials: ' + JSON.stringify(req.body));
 
         var username = req.body.username;
         var password = req.body.password;

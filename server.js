@@ -8,6 +8,10 @@ var googleMaps = require('@google/maps');
 
 var RestobarApp = function () {
 
+    this.user_other = 0;
+    this.user_male = 1;
+    this.user_female = 2;
+
     this.initVariables = function () {
         this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
         this._app = express();
@@ -41,6 +45,9 @@ var RestobarApp = function () {
 
         var venue = require('./routes/venue.js');
         venue(this);
+
+        var profile = require('./routes/profile');
+        profile(this);
 
         //Pages for visitors
         var login = require('./routes/login');
