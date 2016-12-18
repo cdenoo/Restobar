@@ -10,7 +10,7 @@ module.exports = function (restobar) {
 
         restobar.client.query({
             name: "select_possible_venue_types",
-            text: "SELECT * FROM possible_venue_types"
+            text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
         })
         .on('row', function(row, result){
 
