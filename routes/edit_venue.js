@@ -1,6 +1,6 @@
 module.exports = function (restobar) {
 
-    function renderCreateVenue(req, res, errorMessages){
+    function renderEditVenue(req, res, errorMessages){
 
         if(!req.cookies.user){
             //We will render the login page if the user is not logged in
@@ -12,29 +12,29 @@ module.exports = function (restobar) {
             name: "select_possible_venue_types",
             text: "SELECT * FROM possible_venue_types"
         })
-        .on('row', function(row, result){
+            .on('row', function(row, result){
 
-            //Check if the current row needs to be selected
-            if(req.body.type && req.body.type.indexOf(row.type_id + '') >= 0){
-                //Element is should be selected: add an extra field in the row
-                row.selected =  'selected';
-            }
+                //Check if the current row needs to be selected
+                if(req.body.type && req.body.type.indexOf(row.type_id + '') >= 0){
+                    //Element is should be selected: add an extra field in the row
+                    row.selected =  'selected';
+                }
 
-            result.addRow(row);
-        })
-        .on('error', function(){
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
-        })
-        .on('end', function(result){
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
-        });
+                result.addRow(row);
+            })
+            .on('error', function(){
+                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+            })
+            .on('end', function(result){
+                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
+            });
     }
 
-    restobar._app.get('/create-venue', function (req, res, next) {
-        renderCreateVenue(req, res);
+    restobar._app.get('/edit_venue/[0-9]*/', function (req, res, next) {
+        renderEditVenue(req, res);
     });
 
-    restobar._app.post('/create-venue', function (req, res, next) {
+    restobar._app.post('/edit_venue/[0-9]*/', function (req, res, next) {
 
         var name = req.body.name;
         var street = req.body.street;
@@ -100,21 +100,20 @@ module.exports = function (restobar) {
             }
 
             restobar.client.query({
-                name: "create_venue",
-                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coord, y_coord, phone_number, opening_hours, owner_id) " +
-                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11)",
+                name: "edit_venue",
+                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coord=$7, y_coord=$8, phone_number=$9, opening_hours=$10 WHERE owner_id=$11",
                 values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.cookies.user]
             }, function(err, result){
 
                 if(err){
                     errors.push("Something went wrong. Please try again");
                     console.warn("Database error: " + err);
-                    renderCreateVenue(req, res, errors);
+                    renderEditVenue(req, res, errors);
                     return
                 }
 
                 //Everything went well. Insert all the types now.
-                insertVenueTypes(req, res, errors, result.oid);
+                //insertVenueTypes(req, res, errors, result.oid);
 
             });
         });
