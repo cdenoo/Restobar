@@ -11,7 +11,7 @@ block bodycontent
                     div(class='panel-body-content')
                         if errors
                             each error in errors
-                                .error #{error}
+                                .error.bg-danger #{error}
                         h3 I have an account
                         form(class='form-horizontal' method='POST')
                             div(class='form-group')

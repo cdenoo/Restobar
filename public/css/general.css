@@ -73,3 +73,7 @@ nav {
     float: none;
     margin: 0 auto;
 }
+
+.error{
+    padding: 0.5em;
+}
