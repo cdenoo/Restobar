@@ -9,40 +9,47 @@ module.exports = function (restobar) {
         }
 
         var possibleVenueTypes;
+        var marked_type_ids = [];
 
         restobar.client.query({
-            name: "select_possible_venue_types_for_edit",
-            text: "SELECT * FROM possible_venue_types"
+            name: "select_venue_type_ids",
+            text: "SELECT type_id FROM venue_types WHERE venue_id=$1",
+            values: [req.originalUrl.split('/')[2]] //The venue_id can be found in the URL.
         })
-            .on('row', function(row, result){
-
-                //Check if the current row needs to be selected
-                if(req.body.type && req.body.type.indexOf(row.type_id + '') >= 0){
-                    //Element is should be selected: add an extra field in the row
-                    row.selected =  'selected';
-                }
-
-                result.addRow(row);
-            })
-            .on('error', function(){
-                res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
-            })
-            .on('end', function(result){
-                possibleVenueTypes = result.rows;
-            });
-
-        restobar.client.query({
-            name: "select_venue_for_edit",
-            text: "SELECT * FROM venues WHERE venue_id=$1",
-            values: [req.originalUrl.split('/')[2]]
+            .on("row", function(row){
+                marked_type_ids.push(row.type_id);
         })
-            .on('error', function(){
-                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+            .on("end", function(result){
+            restobar.client.query({
+                name: "select_possible_venue_types_for_edit",
+                text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
             })
-            .on('end', function(result){
-                console.log(result.rows[0]);
-                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, fields: result.rows[0]});
-            });
+                .on('row', function(row, result){
+                    if(row.venue_type_id in marked_type_ids){
+                        row.selected = true;
+                    }
+                    result.addRow(row);
+                })
+                .on('error', function(){
+                    res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
+                })
+                .on('end', function(result){
+                    possibleVenueTypes = result.rows;
+                    console.log(marked_type_ids);
+                    restobar.client.query({
+                        name: "select_venue_for_edit",
+                        text: "SELECT * FROM venues WHERE venue_id=$1",
+                        values: [req.originalUrl.split('/')[2]] //The venue_id can be found in the URL.
+                    })
+                        .on('error', function(){
+                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
+                        })
+                        .on('end', function(result){
+                            //  console.log(result.rows[0]);
+                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, fields: result.rows[0]});
+                        });
+                });
+        })
     }
 
     restobar._app.get('/edit_venue/[0-9]*/', function (req, res, next) {
@@ -116,8 +123,8 @@ module.exports = function (restobar) {
 
             restobar.client.query({
                 name: "edit_venue",
-                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coord=$7, y_coord=$8, phone_number=$9, opening_hours=$10 WHERE owner_id=$11",
-                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.cookies.user]
+                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, opening_hours=$10 WHERE venue_id=$11",
+                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.originalUrl.split('/')[2]]
             }, function(err, result){
 
                 if(err){
@@ -129,7 +136,7 @@ module.exports = function (restobar) {
 
                 //Everything went well. Insert all the types now.
                 //insertVenueTypes(req, res, errors, result.oid);
-
+                res.redirect('../venue/' + req.originalUrl.split('/')[2]);
             });
         });
     });
