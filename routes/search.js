@@ -55,10 +55,58 @@ module.exports = function (restobar) {
             return;
         }
 
-        console.log("going strong");
+        var sqlQuery = "SELECT * FROM venues WHERE ";
+        var venueTypeSelection = "";
+        var featureSelection = "";
 
-        //We expect an ajax call to retreive search results -> return a json object!
-        //res.json(['ERROR', 'TBA']);
+        if(query){
+            sqlQuery += "(name LIKE '%" + query + "%' OR email LIKE '%" + query + "%') AND ";
+        }
+
+        if(country){
+            sqlQuery += "country LIKE '%" + country + "%' AND ";
+        }
+
+        if(city){
+            sqlQuery += "city LIKE '%" + city + "%' AND ";
+        }
+
+        //Go over the selected venue types
+        //TODO add button to set an or here instead of an and
+        console.log(req.body.venue_type);
+        for(index in req.body.venue_type){
+            venueTypeSelection += "type_id=" + req.body.venue_type[index] + " AND ";
+        }
+
+        //Go over the selected featuers
+        for(index in req.body.feature){
+            featureSelection += "feature_id=" + req.body.feature[index] + " AND ";
+        }
+
+        //We have a selector for the type: add it to the query
+        if(venueTypeSelection){
+            var cleanSelectionSQL = venueTypeSelection.substring(0, venueTypeSelection.length - 5);
+            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_types WHERE " + cleanSelectionSQL + ") AND ";
+        }
+
+        if(featureSelection){
+            var cleanSelectionSQL = featureSelection.substring(0, featureSelection.length - 5);
+            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_features WHERE " + cleanSelectionSQL + ") AND ";
+        }
+
+        //Now make the clean query (it currently always ends with ... AND
+        var cleanQuery = sqlQuery.substring(0, sqlQuery.length - 5);
+
+        //Execute the query
+        restobar.client.query(cleanQuery) //We use this approach to make sure the query is always executed again
+        .on('error', function(error){
+            res.json(["ERROR", "An error occurred while accessing the database."]);
+        })
+        .on('end', function(result){
+
+            res.json(["SUCCESS", result.rows]);
+
+        });
 
     });
 

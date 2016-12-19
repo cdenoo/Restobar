@@ -80,16 +80,20 @@ block bodycontent
 
             unless venueData.noRating
                 - var n = 1;
-                while n <= venueData.rating
+                - var limit = (parseFloat(venueData.rating) + 0.25);
+                //We round it a little bit so that 3.8 stars becomes 4
+                while n <= limit
                     - n++;
                     i.fa.fa-star(aria-hidden='true')
 
-                - var showHalfStar = ((venueData.rating.toFixed(1) % 0.5) % 2) == 0
+                //Get the decimal part and check if it's >= to 0.25 and smaller than 0.75 (rounding)
+                - var showHalfStar = (venueData.rating % 1) > 0.25 && (venueData.rating % 1) < 0.75;
                 if showHalfStar
+                    - n++;
                     i.fa.fa-star-half-o(aria-hidden='true')
 
                 - var starsLeft = 5 - n;
-                while starsLeft >= 1
+                while starsLeft >= 0
                     - starsLeft--;
                     i.fa.fa-star-o(aria-hidden='true')
 
