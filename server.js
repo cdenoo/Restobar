@@ -39,6 +39,9 @@ var RestobarApp = function () {
         var register = require('./routes/register');
         register(this);
 
+        var search = require('./routes/search');
+        search(this);
+
         //Pages for registered users
         var createVenue = require('./routes/create_venue.js');
         createVenue(this);
