@@ -113,7 +113,7 @@ block bodycontent
                 .tag Opening Hours:
                 div !{venueData.opening_hours.replace(/\n/g, '<br/>')}
         p(style="text-align: center;")
-            a.btn.btn-default(href='/edit_venue/#{venueData.venue_id}') Edit
+            a.btn.btn-default(href='/edit_venue/' + venueData.venue_id) Edit
 
     #googlemap
 

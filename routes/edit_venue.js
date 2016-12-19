@@ -8,8 +8,10 @@ module.exports = function (restobar) {
             res.render('login', {title: 'login', errors: errors});
         }
 
+        var possibleVenueTypes;
+
         restobar.client.query({
-            name: "select_possible_venue_types",
+            name: "select_possible_venue_types_for_edit",
             text: "SELECT * FROM possible_venue_types"
         })
             .on('row', function(row, result){
@@ -23,10 +25,23 @@ module.exports = function (restobar) {
                 result.addRow(row);
             })
             .on('error', function(){
+                res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+            })
+            .on('end', function(result){
+                possibleVenueTypes = result.rows;
+            });
+
+        restobar.client.query({
+            name: "select_venue_for_edit",
+            text: "SELECT * FROM venues WHERE venue_id=$1",
+            values: [req.originalUrl.split('/')[2]]
+        })
+            .on('error', function(){
                 res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
             })
             .on('end', function(result){
-                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
+                console.log(result.rows[0]);
+                res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, fields: result.rows[0]});
             });
     }
 

@@ -38,11 +38,11 @@ block bodycontent
 
                         div(class='form-group')
                             label(for='houseNumber') * House Number:
-                            input(id='houseNumber' class='form-control' type='text' placeholder='House Number' name='houseNumber' value=fields.houseNumber required)
+                            input(id='houseNumber' class='form-control' type='text' placeholder='House Number' name='houseNumber' value=fields.house_number required)
 
                         div(class='form-group')
                             label(for='postalCode') * Postal Code:
-                            input(id='postalCode' class='form-control' type='text' placeholder='Postal Code' name='postalCode' value=fields.postalCode required)
+                            input(id='postalCode' class='form-control' type='text' placeholder='Postal Code' name='postalCode' value=fields.postal_code required)
 
                         div(class='form-group')
                             label(for='city') * City:
@@ -54,11 +54,11 @@ block bodycontent
 
                         div(class='form-group')
                             label(for='phoneNumber') Phone Number:
-                            input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phoneNumber)
+                            input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phone_number)
 
                         div(class='form-group')
                             label(for='openingHours') Opening Hours:
-                            textarea(id='openingHours' class='form-control' name='openingHours') #{fields.openingHours}
+                            textarea(id='openingHours' class='form-control' name='openingHours') #{fields.opening_hours}
 
                         //TODO add facebook and twitter urls
                         //div(class='form-group')

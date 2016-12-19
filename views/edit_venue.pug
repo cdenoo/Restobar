@@ -20,7 +20,7 @@ block bodycontent
                     form(class='registerForm' method='POST')
 
                         div(class='form-group')
-                            label(for='type') * Type:
+                            label(for='type') Type:
                             select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
                                 each type in possibleVenueTypes
                                     if type.selected === "selected"
@@ -29,36 +29,36 @@ block bodycontent
                                         option(value=type.type_id) #{type.type_name}
 
                         div(class='form-group')
-                            label(for='name') * Name:
+                            label(for='name') Name:
                             input(id='name' class='form-control' type='text' placeholder='Name' name='name' value=fields.name required)
 
                         div(class='form-group')
-                            label(for='street') * Street:
+                            label(for='street') Street:
                             input(id='street' class='form-control' type='text' placeholder='Street' name='street' value=fields.street required)
 
                         div(class='form-group')
-                            label(for='houseNumber') * House Number:
-                            input(id='houseNumber' class='form-control' type='text' placeholder='House Number' name='houseNumber' value=fields.houseNumber required)
+                            label(for='houseNumber') House Number:
+                            input(id='houseNumber' class='form-control' type='text' placeholder='House Number' name='houseNumber' value=fields.house_number required)
 
                         div(class='form-group')
-                            label(for='postalCode') * Postal Code:
-                            input(id='postalCode' class='form-control' type='text' placeholder='Postal Code' name='postalCode' value=fields.postalCode required)
+                            label(for='postalCode') Postal Code:
+                            input(id='postalCode' class='form-control' type='text' placeholder='Postal Code' name='postalCode' value=fields.postal_code required)
 
                         div(class='form-group')
-                            label(for='city') * City:
+                            label(for='city') City:
                             input(id='city' class='form-control' type='text' placeholder='City' name='city' value=fields.city required)
 
                         div(class='form-group')
-                            label(for='country') * Country:
+                            label(for='country') Country:
                             input(id='country' class='form-control' type='text' placeholder='Country' name='country' value=fields.country required)
 
                         div(class='form-group')
                             label(for='phoneNumber') Phone Number:
-                            input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phoneNumber)
+                            input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phone_number)
 
                         div(class='form-group')
                             label(for='openingHours') Opening Hours:
-                            textarea(id='openingHours' class='form-control' name='openingHours') #{fields.openingHours}
+                            textarea(id='openingHours' class='form-control' name='openingHours') #{fields.opening_hours}
 
                         //TODO add facebook and twitter urls
                         //div(class='form-group')
@@ -76,6 +76,3 @@ block bodycontent
 
                         div
                             button(class='btn btn-default' type='submit') Save
-
-                div(class='panel-footer')
-                    | Fields marked with * are required.

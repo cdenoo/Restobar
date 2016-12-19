@@ -4,7 +4,7 @@ module.exports = function (restobar) {
 
         if(!req.cookies.user){
             //We will render the login page if the user is not logged in
-            var erros = array("You need to be logged in to view this page");
+            var errors = ["You need to be logged in to view this page"];
             res.render('login', {title: 'login', errors: errors});
         }
 
