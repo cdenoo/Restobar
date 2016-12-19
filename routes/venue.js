@@ -22,11 +22,12 @@ module.exports = function (restobar) {
 
         restobar.client.query({
             name: "select_venue",
-            text: "SELECT * FROM venues WHERE venue_id=$1",
+            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating_count FROM venues WHERE venue_id=$1",
             values: [venueID]
         })
-        .on('error', function(){
+        .on('error', function(error){
             //TODO add errors to homepage
+            console.log("DB ERROR: " + error);
             res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
         })
         .on('end', function(result){
@@ -37,8 +38,13 @@ module.exports = function (restobar) {
             }
 
             var venueData = result.rows[0];
-            venueData.noRating = true;
-            venueData.rating = 0;
+
+            venueData.rating = parseFloat(venueData.rating).toFixed(1); //We only return one digit of precision
+            venueData.rating = 3.2;
+
+            if(!venueData.rating_count){
+                venueData.noRating = true;
+            }
 
             //Load the ratings
             restobar.client.query({
