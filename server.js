@@ -6,6 +6,7 @@ var pg = require('pg');
 var cookieParser = require('cookie-parser');
 var googleMaps = require('@google/maps');
 var forecast = require('forecast');
+var passport = require('passport'), FacebookStrategy = require('passport-facebook').Strategy;
 
 var RestobarApp = function () {
 
