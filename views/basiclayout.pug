@@ -10,11 +10,12 @@ html
 	body
 		div(class='container-fluid')
 			block layoutcontent
-			div(class='siteTopContainer')
-				div(class='siteTopTitle')
-					a(href='/') Restobar
-				div(class='siteTopLogo')
-					img(id='siteLogo' src="/images/restobar_logo.png" alt="restobar_logo" align="center")
+			block headercontent
+				div(class='siteTopContainer')
+					div(class='siteTopTitle')
+						a(href='/') Restobar
+					div(class='siteTopLogo')
+						img(id='siteLogo' src="/images/restobar_logo.png" alt="restobar_logo" align="center")
 			div(class='navbar navbar-default')
 				div(class='container-fluid')
 					ul(class='nav navbar-nav')

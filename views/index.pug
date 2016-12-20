@@ -2,9 +2,8 @@ extends basiclayout
 
 block headcontent
     link(rel="stylesheet", href="css/home.css")
-
 block headercontent
-    //Remove the default header
+    //remove header
 block bodycontent
 
     #splashBlock
@@ -64,7 +63,7 @@ block bodycontent
 
     script
         | $(".container-fluid:first-of-type").removeClass("container-fluid");
-    | Todo : Add index content
+
     script(src='/scripts/weather.js')
     script.
         $(function(){
