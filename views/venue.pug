@@ -112,8 +112,9 @@ block bodycontent
             .col-md-6
                 .tag Opening Hours:
                 div !{venueData.opening_hours.replace(/\n/g, '<br/>')}
-        p(style="text-align: center;")
-            a.btn.btn-default(href='/edit_venue/' + venueData.venue_id) Edit
+        if userID == venueData.owner_id
+            p(style="text-align: center;")
+                a.btn.btn-default(href='/edit_venue/' + venueData.venue_id) Edit
 
     #googlemap
 

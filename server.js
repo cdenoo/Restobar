@@ -62,13 +62,13 @@ var RestobarApp = function () {
         //Pages for test
         var map = require('./routes/map');
         map(this);
+
+        var api = require('./routes/api');
+        api(this);
     };
 
     this.initErrorHandling = function () {
         this._app.use(function (err, req, res, next) {
-
-            console.log(err);
-
             switch(err){
                 case 400:
                     res.status(400);
@@ -90,7 +90,7 @@ var RestobarApp = function () {
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development' || true){
+        if(process.env.NODE_ENV === 'development'){
             console.warn(value);
         }
     };
@@ -100,11 +100,13 @@ var RestobarApp = function () {
 
         // connect to our database
         client.connect(function (err) {
-            if (err) throw err;
+            if (err) {
+                app.devWarn(err);
+                app.client = null;
+            }else{
+                app.client = client;
+            }
         });
-
-        this.client = client;
-
     };
 
     this.initGoogleMaps = function(){
@@ -113,7 +115,7 @@ var RestobarApp = function () {
             key: "AIzaSyAXfKp21e6rPXmjGDzCWRmptzvk5k041O4"
         });
 
-    }
+    };
 
     this.initServer = function () {
         this.initVariables();
