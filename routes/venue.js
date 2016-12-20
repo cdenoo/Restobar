@@ -63,9 +63,15 @@ module.exports = function (restobar) {
                 res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
             })
             .on('end', function(reviewsResult){
-                res.render('venue', {title: 'Restobar | ' + venueData.name, userID: req.cookies.user, venueData: venueData, fields: req.body, reviews: reviewsResult.rows, errors: errorMessages});
+                restobar.client.query({text:'SELECT fav FROM favorites WHERE user_id=$1::int AND venue_id=$2::int', values: [req.cookies.user, venueID]})
+                    .on('error', function (err) {
+                        res.render('venue', {title: 'Restobar | ' + venueData.name, userID: req.cookies.user, venueData: venueData, fields: req.body, reviews: reviewsResult.rows, errors: errorMessages, favorite:false});
+                    })
+                    .on('end', function (result) {
+                        var fav = result.rows[0].fav;
+                        res.render('venue', {title: 'Restobar | ' + venueData.name, userID: req.cookies.user, venueData: venueData, fields: req.body, reviews: reviewsResult.rows, errors: errorMessages, favorite:fav});
+                    });
             });
-
         });
     }
 
