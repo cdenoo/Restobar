@@ -31,7 +31,7 @@ module.exports = function (restobar) {
             res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
         })
         .on('end', function(result){
-            //TODO include the rating (no ratings? --> send noRating = true
+
             if(!result.rows.length){
                 //No venue found with this ID: error
                 res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
