@@ -61,6 +61,9 @@ var RestobarApp = function () {
         var login = require('./routes/login');
         login(this);
 
+        var auth = require('./routes/auth.js');
+        auth(this);
+
         //Pages for test
         var map = require('./routes/map');
         map(this);
@@ -115,11 +118,36 @@ var RestobarApp = function () {
             key: "AIzaSyAXfKp21e6rPXmjGDzCWRmptzvk5k041O4"
         });
 
-    }
+    };
+
+    this.initFacebookLogin = function(){
+        passport.use(new FacebookStrategy({
+                clientID: "622890094588906",
+                clientSecret: "2b1497398b4ca050f8827165c51049c8",
+                callbackURL: "https://wtrestobar.herokuapp.com/login"
+            },
+            function(accessToken, refreshToken, profile, done) {
+                User.findOne({ username: username }, function(err, user) {
+                    if(err){
+                        return done(err);
+                    }
+                    if(!user){
+                        return done(null, false);
+                    }
+                    if(!user.validPassword(password)){
+                        return done(null, false);
+                    }
+                    return done(null, user);
+                });
+            }
+        ));
+        this.passport = passport;
+    };
 
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
+        this.initFacebookLogin();
         this.initViews();
         this.initRoutes();
         this.initErrorHandling();

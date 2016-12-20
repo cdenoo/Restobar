@@ -2,3 +2,8 @@ extends basiclayout
 
 block bodycontent
     | Todo : Add index content
+    script(src='/scripts/weather.js')
+    script.
+        $(function(){
+            getLocation();
+        });
