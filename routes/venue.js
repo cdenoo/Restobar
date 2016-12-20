@@ -40,7 +40,6 @@ module.exports = function (restobar) {
             var venueData = result.rows[0];
 
             venueData.rating = parseFloat(venueData.rating).toFixed(1); //We only return one digit of precision
-            venueData.rating = 3.2;
 
             if(!venueData.rating_count){
                 venueData.noRating = true;
