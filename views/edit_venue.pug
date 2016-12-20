@@ -23,7 +23,7 @@ block bodycontent
                             label(for='type') Type:
                             select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
                                 each type in possibleVenueTypes
-                                    if type.selected === "selected"
+                                    if type.selected
                                         option(value=type.type_id selected) #{type.type_name}
                                     else
                                         option(value=type.type_id) #{type.type_name}
