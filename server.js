@@ -129,7 +129,7 @@ var RestobarApp = function () {
             function(accessToken, refreshToken, profile, done) {
                 console.log(accessToken);
                 console.log(profile);
-                this.facebookCallback(accessToken, profile);
+                this.auth.facebookCallback(accessToken, profile);
             }
         ));
         this.passport = passport;
@@ -146,6 +146,7 @@ var RestobarApp = function () {
         this.initGoogleMaps();
         this._app.listen(this._port);
 
+        /*
         var testprofile = { id: '1550444234972996',
             username: undefined,
             displayName: 'Thijs Spinoy',
@@ -160,6 +161,7 @@ var RestobarApp = function () {
             _json: { name: 'Thijs Spinoy', id: '1550444234972996' } };
 
         this.auth.facebookCallback(this, "AAA", testprofile);
+        */
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
     };
