@@ -72,7 +72,7 @@ var RestobarApp = function () {
     this.initErrorHandling = function () {
         this._app.use(function (err, req, res, next) {
 
-            console.log(err);
+            //console.log(err);
 
             switch(err){
                 case 400:
@@ -88,7 +88,7 @@ var RestobarApp = function () {
                     res.render('errorpage', {title: 'Something bad happened!'});
                     break;
                 default:
-                    res.render('errorpage', {title: 'Unhandled error'});
+                    res.render('errorpage', {title: 'Unhandled error', error: err});
                     break;
             }
         });
