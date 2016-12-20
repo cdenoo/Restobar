@@ -129,7 +129,7 @@ var RestobarApp = function () {
             function(accessToken, refreshToken, profile, done) {
                 console.log(accessToken);
                 console.log(profile);
-                this.auth.facebookCallback(accessToken, profile);
+                this.auth.facebookCallback(this, accessToken, profile);
             }
         ));
         this.passport = passport;
