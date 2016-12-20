@@ -124,7 +124,7 @@ var RestobarApp = function () {
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
                 clientSecret: "2b1497398b4ca050f8827165c51049c8",
-                callbackURL: "https://wtrestobar.herokuapp.com/login"
+                callbackURL: "https://wtrestobar.herokuapp.com/auth/facebook/callback"
             },
             function(accessToken, refreshToken, profile, done) {
                 console.log(accessToken);
