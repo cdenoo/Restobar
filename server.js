@@ -141,8 +141,8 @@ var RestobarApp = function () {
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
-        this.initFacebookLogin();
         this.initViews();
+        this.initFacebookLogin();
         this.initRoutes();
         this.initErrorHandling();
         this.initDB();
