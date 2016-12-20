@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var googleMaps = require('@google/maps');
 var forecast = require('forecast');
 var passport = require('passport'), FacebookStrategy = require('passport-facebook').Strategy;
+var multer = require('multer');
 
 var RestobarApp = function () {
 
@@ -54,6 +55,9 @@ var RestobarApp = function () {
         var editVenue = require('./routes/edit_venue.js');
         editVenue(this);
 
+        var venueImage = require('./routes/venue_image.js');
+        venueImage(this);
+
         var profile = require('./routes/profile');
         profile(this);
 
@@ -98,7 +102,7 @@ var RestobarApp = function () {
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development'){
+        if(process.env.NODE_ENV === 'development' || true){
             console.warn(value);
         }
     };
@@ -109,6 +113,7 @@ var RestobarApp = function () {
         // connect to our database
         client.connect(function (err) {
             if (err) throw err;
+            console.warn("Connected to db");
         });
 
         this.client = client;
@@ -147,10 +152,23 @@ var RestobarApp = function () {
         this.passport = passport;
     };
 
+    this.initUpload = function(){
+
+        var storage = multer.diskStorage({
+            destination: 'public/uploads',
+            filename: function (req, file, cb){
+                cb(null, req.cookies.user + Date.now() + file.originalname);
+            }
+        })
+
+        this.upload = multer({storage: storage});
+    }
+
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
         this.initFacebookLogin();
+        this.initUpload();
         this.initViews();
         this.initRoutes();
         this.initErrorHandling();

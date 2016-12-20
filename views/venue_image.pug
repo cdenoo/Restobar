@@ -1,0 +1,39 @@
+extends basiclayout
+block headcontent
+    script(src='./scripts/registerscripts.js')
+
+block bodycontent
+    div(class='col-lg-4 col-centered')
+
+        div(class='col-lg-11 col-centered')
+            div(class='jumbotron pageTitle')
+                | Venue Image<br>#{venueData.name}
+
+        div(class='container-fluid')
+
+            p(style="text-align: center;")
+                a(href="/edit_venue/" + venueData.venue_id class="btn btn-default") Modify Venue Data
+                br
+                br
+
+            div(class='panel panel-default')
+
+                div(class='panel-body')
+
+                    if errors
+                        each error in errors
+                            .error #{error}
+
+                    p(style="text-align: center;")
+                        | The current image of this venue:<br>
+                        img(src=venueData.image_url)
+
+                    form(method='POST' enctype="multipart/form-data" style="text-align: center;")
+
+                        h2 Upload a new image
+
+                        input(type="file" name="image" id="image" placeholder="Image for Venue" style="margin: 0 auto;")
+                        br
+
+                        div
+                            button(class='btn btn-default' type='submit') Save

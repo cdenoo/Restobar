@@ -17,6 +17,9 @@ block bodycontent
                         each error in errors
                             .error #{error}
 
+                    p(style="text-align: center;")
+                        |     a(href="/venue_image/" + fields.venue_id class="btn btn-default") Modify Image
+
                     form(class='registerForm' method='POST')
 
                         div(class='form-group')
