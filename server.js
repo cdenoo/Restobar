@@ -127,6 +127,10 @@ var RestobarApp = function () {
                 callbackURL: "https://wtrestobar.herokuapp.com/login"
             },
             function(accessToken, refreshToken, profile, done) {
+                console.log(accessToken);
+                console.log(refreshToken);
+                console.log(profile);
+                console.log(done);
                 User.findOne({ username: username }, function(err, user) {
                     if(err){
                         return done(err);
