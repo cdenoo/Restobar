@@ -44,7 +44,7 @@ module.exports = function (restobar) {
                     resultFeatures.addRow(row);
                 })
                 .on('error', function(){
-                    res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+                    res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                 })
                 .on('end', function(resultFeatures){
                     res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages, possibleVenueTypes: possibleVenueTypes, possibleFeatures: resultFeatures.rows, fields: req.body});
@@ -123,7 +123,7 @@ module.exports = function (restobar) {
 
             restobar.client.query({
                 name: "create_venue",
-                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coord, y_coord, phone_number, opening_hours, owner_id) " +
+                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coordinate, y_coordinate, phone_number, opening_hours, owner_id) " +
                 "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11)",
                 values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.cookies.user]
             }, function(err, result){
@@ -134,13 +134,40 @@ module.exports = function (restobar) {
                     renderCreateVenue(req, res, errors);
                     return
                 }
-
-                //Everything went well. Insert all the types now.
-                insertVenueTypes(req, res, errors, result.oid);
-
+                restobar.client.query({
+                    name: "count_all_venues",
+                    text: "SELECT * FROM venues"
+                })
+                    .on('end', function(result){
+                        //Everything went well. Insert all the types and features now.
+                        insertFeatures(req, res, errors, result.rowCount + 1);
+                        insertVenueTypes(req, res, errors, result.rowCount + 1);
+                    });
             });
         });
     });
+
+    function insertFeatures(req, res, errors, venueID) {
+        console.log(req.body);
+
+        //Insert each feature of venue
+        req.body.feature.forEach(function(feature){
+            restobar.client.query({
+                name: "link_venue_and_features",
+                text: "INSERT INTO venue_features (venue_id, feature_id) VALUES($1, $2)",
+                values: [venueID, feature]
+            }, function (featureErr, featureResult) {
+
+                if (featureErr) {
+                    errors.push("Something went wrong while saving the venue type. All other data has been saved.");
+                    //TODO open render modify venue form instead, as all other information has been saved.
+                    renderCreateVenue(req, res, errors);
+                    return
+                }
+
+            });
+        });
+    }
 
     function insertVenueTypes(req, res, errors, venueID){
 
@@ -148,12 +175,11 @@ module.exports = function (restobar) {
         req.body.type.forEach(function(type){
             restobar.client.query({
                 name: "link_venue_and_type",
-                text: "INSERT INTO venue_types (venue_id, type_id) " +
-                "VALUES($1, $2)",
+                text: "INSERT INTO venue_types (venue_id, type_id) VALUES($1, $2)",
                 values: [venueID, type]
             }, function(typeErr, typeResult){
 
-                if(err){
+                if(typeErr){
                     errors.push("Something went wrong while saving the venue type. All other data has been saved.");
                     //TODO open render modify venue form instead, as all other information has been saved.
                     renderCreateVenue(req, res, errors);

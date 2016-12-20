@@ -61,9 +61,9 @@ block bodycontent
                             select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' required multiple)
                                 each feature in possibleFeatures
                                     if feature.selected === "selected"
-                                        option(value=feature.feature_id selected) #{feature.feature_name}
+                                        option(value=feature.feature_id selected) #{feature.name}
                                     else
-                                        option(value=feature.feature_id) #{feature.feature_name}
+                                        option(value=feature.feature_id) #{feature.name}
 
                         div(class='form-group')
                             label(for='openingHours') Opening Hours:

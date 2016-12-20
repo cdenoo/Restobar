@@ -10,7 +10,10 @@ module.exports = function (restobar) {
 
         var possibleVenueTypes;
         var marked_type_ids = [];
+        var possibleFeatures;
+        var marked_feature_ids = [];
 
+        //The first query selects all the venuetype ids of the venue we will edit.
         restobar.client.query({
             name: "select_venue_type_ids",
             text: "SELECT type_id FROM venue_types WHERE venue_id=$1",
@@ -19,11 +22,13 @@ module.exports = function (restobar) {
             .on("row", function(row){
                 marked_type_ids.push(row.type_id);
         })
-            .on("end", function(result){
-            restobar.client.query({
-                name: "select_possible_venue_types_for_edit",
-                text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
-            })
+            .on("end", function(){
+
+                //The second query makes sure that the selected types will be marked as selected.
+                restobar.client.query({
+                    name: "select_possible_venue_types_for_edit",
+                    text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
+                })
                 .on('row', function(row, result){
                     if(row.venue_type_id in marked_type_ids){
                         row.selected = true;
@@ -33,20 +38,50 @@ module.exports = function (restobar) {
                 .on('error', function(){
                     res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                 })
-                .on('end', function(result){
-                    possibleVenueTypes = result.rows;
-                    console.log(marked_type_ids);
+                .on('end', function(){
+
+                    //The fourth query selects all feature ids of the venue that will be edited.
                     restobar.client.query({
-                        name: "select_venue_for_edit",
-                        text: "SELECT * FROM venues WHERE venue_id=$1",
+                        name: "select_venue_feature_ids",
+                        text: "SELECT feature_id FROM venue_features WHERE venue_id=$1",
                         values: [req.originalUrl.split('/')[2]] //The venue_id can be found in the URL.
                     })
-                        .on('error', function(){
-                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
+                        .on("row", function(row){
+                            marked_feature_ids.push(row.feature_id);
                         })
-                        .on('end', function(result){
-                            //  console.log(result.rows[0]);
-                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, fields: result.rows[0]});
+                        .on("end", function(){
+
+                            //The fifth query makes sure that the selected features will be marked as selected.
+                            restobar.client.query({
+                                name: "select_possible_venue_features_for_edit",
+                                text: "SELECT * FROM features ORDER BY name ASC"
+                            })
+                                .on('row', function(row, result){
+                                    if(row.feature_id in marked_feature_ids){
+                                        row.selected = true;
+                                    }
+                                    result.addRow(row);
+                                })
+                                .on('error', function(){
+                                    res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
+                                })
+                                .on('end', function(result){
+                                    possibleFeatures = result.rows;
+                                    console.log(marked_feature_ids);
+
+                                    //The last query selects all the other information about the venue to be edited.
+                                    restobar.client.query({
+                                        name: "select_venue_for_edit",
+                                        text: "SELECT * FROM venues WHERE venue_id=$1",
+                                        values: [req.originalUrl.split('/')[2]] //The venue_id can be found in the URL.
+                                    })
+                                        .on('error', function(){
+                                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
+                                        })
+                                        .on('end', function(result){
+                                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, possibleFeatures: possibleFeatures, fields: result.rows[0]});
+                                        })
+                                })
                         });
                 });
         })
@@ -135,11 +170,34 @@ module.exports = function (restobar) {
                 }
 
                 //Everything went well. Insert all the types now.
-                //insertVenueTypes(req, res, errors, result.oid);
+                deleteOldVenueTypes(req.originalUrl.split('/')[2]);
+                insertVenueTypes(req, res, errors, req.originalUrl.split('/')[2]);
                 res.redirect('../venue/' + req.originalUrl.split('/')[2]);
             });
         });
     });
+
+    function deleteOldVenueTypes(venueID){
+        var oldTypes = [];
+        restobar.client.query({
+            name: "select_old_venuetypes",
+            text: "SELECT * FROM venue_types WHERE venue_id=$1",
+            values: [venueID, type]
+        })
+            .on('row', function(row){
+                console.log(row);
+                oldTypes.push(row);
+            })
+            .on('end', function(){
+                oldTypes.forEach(function(type){
+                    restobar.client.query({
+                        name: "delete_old_venuetypes",
+                        text: "DELETE FROM venue_types WHERE type_id=$1",
+                        values: [type]
+                    })
+                })
+            })
+    }
 
     function insertVenueTypes(req, res, errors, venueID){
 
