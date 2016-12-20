@@ -67,6 +67,9 @@ var RestobarApp = function () {
         //Pages for test
         var map = require('./routes/map');
         map(this);
+
+        var api = require('./routes/api');
+        api(this);
     };
 
     this.initErrorHandling = function () {
@@ -95,7 +98,7 @@ var RestobarApp = function () {
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development' || true){
+        if(process.env.NODE_ENV === 'development'){
             console.warn(value);
         }
     };

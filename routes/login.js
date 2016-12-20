@@ -6,7 +6,7 @@ module.exports = function (restobar) {
     function renderLoginForm(req, res, errorMessages){
 
         //Test if the user is actually logged in: redirect to the homepage
-        if(restobar.userID > 0){
+        if(req.cookies.user > 0){
             res.redirect('/');
             return;
         }
