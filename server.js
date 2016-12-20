@@ -5,6 +5,7 @@ var favicon = require('serve-favicon');
 var pg = require('pg');
 var cookieParser = require('cookie-parser');
 var googleMaps = require('@google/maps');
+var forecast = require('forecast');
 
 var RestobarApp = function () {
 
