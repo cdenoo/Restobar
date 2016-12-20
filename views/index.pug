@@ -1,4 +1,72 @@
 extends basiclayout
 
+block headcontent
+    link(rel="stylesheet", href="css/home.css")
+
+block headercontent
+    //Remove the default header
 block bodycontent
+
+    #splashBlock
+        #overlay
+            #logoWrapper
+                a(href='/') Restobar
+                div(class='siteTopLogo')
+                    img(id='siteLogo' src="./images/restobar_logo.png" alt="restobar_logo" align="center")
+
+            form#search.row(method="post" name="search" action="#")
+                .input-group.input-group-lg
+                    input(type="text" name="search" class="form-control" placeholder="What do you want to eat?...")
+                    span.input-group-btn
+                        button.btn.btn-default(type="button")
+                            | Search!
+
+    .container-fluid
+
+        section#spotlight
+            h2
+                | Recommended by others
+            .row
+                .col-md-3
+                    a.venue(href="#")
+                        img(src="http://cdn.theculturetrip.com/wp-content/uploads/2016/02/restaurant-939435_960_720.jpg")
+                        span
+                            | TITLE
+
+                .col-md-3
+                    a.venue(href="#")
+                        img(src="http://www.nandos.com/sites/all/themes/nandos/images/restaurants/restaurant-carousel-1.jpg")
+                        span
+                            | TITLE
+
+                .col-md-3
+                    a.venue(href="#")
+                        img(src="https://s3.eu-central-1.amazonaws.com/restoathome/5710b2af64cfd.jpg")
+                        span
+                            | TITLE
+
+                .col-md-3
+                    a.venue(href="#")
+                        img(src="https://www.soelden.com/urlaub/images/SD/WI/headerbilder/aktivitaeten_header_restaurant,method=scale,prop=data,id=1200-510.jpg")
+                        span
+                            | TITLE
+
+
+        section#personalRecommendations.row
+            #neighbourhood.col-md-6
+                h3
+                    | In the neighbourhood
+
+
+            #favourites.col-md-6
+                h3
+                    | Your favourites
+
+    script
+        | $(".container-fluid:first-of-type").removeClass("container-fluid");
     | Todo : Add index content
+    script(src='/scripts/weather.js')
+    script.
+        $(function(){
+            getLocation();
+        });
