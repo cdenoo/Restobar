@@ -61,8 +61,8 @@ var RestobarApp = function () {
         var login = require('./routes/login');
         login(this);
 
-        var auth = require('./routes/auth.js');
-        auth(this);
+        this.auth = require('./routes/auth.js');
+        this.auth(this);
 
         //Pages for test
         var map = require('./routes/map');
@@ -128,21 +128,8 @@ var RestobarApp = function () {
             },
             function(accessToken, refreshToken, profile, done) {
                 console.log(accessToken);
-                console.log(refreshToken);
                 console.log(profile);
-                console.log(done);
-                User.findOne({ username: username }, function(err, user) {
-                    if(err){
-                        return done(err);
-                    }
-                    if(!user){
-                        return done(null, false);
-                    }
-                    if(!user.validPassword(password)){
-                        return done(null, false);
-                    }
-                    return done(null, user);
-                });
+                this.facebookCallback(accessToken, profile);
             }
         ));
         this.passport = passport;
@@ -158,6 +145,21 @@ var RestobarApp = function () {
         this.initDB();
         this.initGoogleMaps();
         this._app.listen(this._port);
+
+        var testprofile = { id: '1550444234972996',
+            username: undefined,
+            displayName: 'Thijs Spinoy',
+            name:
+            { familyName: undefined,
+                givenName: undefined,
+                middleName: undefined },
+            gender: undefined,
+            profileUrl: undefined,
+            provider: 'facebook',
+            _raw: '{"name":"Thijs Spinoy","id":"1550444234972996"}',
+            _json: { name: 'Thijs Spinoy', id: '1550444234972996' } };
+
+        this.auth.facebookCallback(this, "AAA", testprofile);
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
     };
