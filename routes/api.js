@@ -83,40 +83,10 @@ module.exports = function (restobar) {
     router.get('/users/:id', function (req, res, next) {
         loginCheck(req, res, function () {
             var user_id = req.params.id;
-            objectResultQuery(
+            singleResultQuery(
                 {
                     name: 'select_user',
                     text: 'SELECT * FROM users WHERE user_id=$1',
-                    values: [user_id]
-                },
-                res,
-                next);
-        });
-    });
-
-    // GET user.first_name by id
-    router.get('/users/:id/first_name', function (req, res, next) {
-        loginCheck(req, res, function () {
-            var user_id = req.params.id;
-            singleResultQuery(
-                {
-                    name: 'select_user_firstname',
-                    text: 'SELECT (first_name) FROM users WHERE user_id=$1',
-                    values: [user_id]
-                },
-                res,
-                next);
-        });
-    });
-
-    // GET user.last_name by id
-    router.get('/users/:id/last_name', function (req, res, next) {
-        loginCheck(req, res, function () {
-            var user_id = req.params.id;
-            singleResultQuery(
-                {
-                    name: 'select_user_lastname',
-                    text: 'SELECT last_name FROM users WHERE user_id=$1',
                     values: [user_id]
                 },
                 res,
@@ -147,43 +117,6 @@ module.exports = function (restobar) {
             objectResultQuery(
                 {
                     text: 'SELECT * FROM venues WHERE venue_id=$1::int',
-                    values: [venue_id]
-                },
-                res,
-                next
-            );
-        });
-    });
-
-    // GET venue.key by id
-    router.get('/venues/:id/:key', function (req, res, next) {
-        loginCheck(req, res, function () {
-            var venue_id = req.params.id;
-            var venue_key = req.params.key;
-
-            // Nakijken of de gevraagde key prive is of niet
-            switch (venue_key) {
-                case 'venue_id':
-                case 'name':
-                case 'street':
-                case 'house_number':
-                case 'postal_code':
-                case 'city':
-                case 'country':
-                case 'x_coordinate':
-                case 'y_coordinate':
-                case 'phone_number':
-                case 'opening_hours':
-                case 'owner':
-                    break;
-                default:
-                    jsonFail(res);
-                    return;
-            }
-
-            singleResultQuery(
-                {
-                    text: 'SELECT ' + venue_key + ' FROM venues WHERE venue_id=$1::int',
                     values: [venue_id]
                 },
                 res,
