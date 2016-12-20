@@ -68,5 +68,36 @@ h2{
 #spotlight a.venue span{
     display: block;
     color: #000;
-    padding-top: 0.5em;
+    padding-top: 0.25em;
+    font-size: 1.5em;
 }
+
+#personalRecommendations{
+    max-width: 80em;
+    margin: 0 auto;
+}
+
+#personalRecommendations .venue .imgContainer{
+    text-align: center;
+}
+
+#personalRecommendations .venue .imgContainer img{
+    max-width: 100%;
+    max-height: 4em;
+    width: auto;
+    height: auto;
+}
+
+#personalRecommendations .venue .infoContainer .title{
+    display: inline-block;
+    padding-top: 0.25em;
+    padding-left: 0.25em;
+    font-size: 1.25em;
+    color: #000;
+}
+
+#personalRecommendations .venue .infoContainer .stars{
+    display: inline-block;
+    padding-left: 0.31em;
+}
+
