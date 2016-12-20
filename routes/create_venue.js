@@ -8,11 +8,13 @@ module.exports = function (restobar) {
             res.render('login', {title: 'login', errors: errors});
         }
 
+        var possibleVenueTypes;
+
         restobar.client.query({
             name: "select_possible_venue_types",
             text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
         })
-        .on('row', function(row, result){
+        .on('row', function(row, resultTypes){
 
             //Check if the current row needs to be selected
             if(req.body.type && req.body.type.indexOf(row.type_id + '') >= 0){
@@ -20,14 +22,34 @@ module.exports = function (restobar) {
                 row.selected =  'selected';
             }
 
-            result.addRow(row);
+            resultTypes.addRow(row);
         })
         .on('error', function(){
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
         })
-        .on('end', function(result){
-            res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: result.rows, fields: req.body});
-        });
+        .on('end', function(resultTypes){
+            possibleVenueTypes = resultTypes.rows;
+            restobar.client.query({
+                name: "select_possible_venue_features",
+                text: "SELECT * FROM features ORDER BY name ASC"
+            })
+                .on('row', function(row, resultFeatures){
+
+                    //Check if the current row needs to be selected
+                    if(req.body.name && req.body.name.indexOf(row.feature_id + '') >= 0){
+                        //Element is should be selected: add an extra field in the row
+                        row.selected =  'selected';
+                    }
+
+                    resultFeatures.addRow(row);
+                })
+                .on('error', function(){
+                    res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'],  fields: req.body});
+                })
+                .on('end', function(resultFeatures){
+                    res.render('create_venue', {title: 'Create a Venue', userID: req.cookies.user, errors: errorMessages, possibleVenueTypes: possibleVenueTypes, possibleFeatures: resultFeatures.rows, fields: req.body});
+                });
+        })
     }
 
     restobar._app.get('/create-venue', function (req, res, next) {
