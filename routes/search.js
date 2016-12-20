@@ -1,6 +1,3 @@
-/**
- * Created by thijsspinoy on 22/11/2016.
- */
 module.exports = function (restobar) {
 
     function renderSearch(req, res, errorMessages, query){
@@ -55,9 +52,7 @@ module.exports = function (restobar) {
             return;
         }
 
-        var sqlQuery = "SELECT * FROM venues WHERE ";
-        var venueTypeSelection = "";
-        var featureSelection = "";
+        var sqlQuery = "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues WHERE ";
 
         if(query){
             sqlQuery += "(name LIKE '%" + query + "%' OR email LIKE '%" + query + "%') AND ";
@@ -75,23 +70,12 @@ module.exports = function (restobar) {
         //TODO add button to set an or here instead of an and
         console.log(req.body.venue_type);
         for(index in req.body.venue_type){
-            venueTypeSelection += "type_id=" + req.body.venue_type[index] + " AND ";
+            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_types WHERE type_id=" + req.body.venue_type[index] + ") AND ";
         }
 
         //Go over the selected featuers
         for(index in req.body.feature){
-            featureSelection += "feature_id=" + req.body.feature[index] + " AND ";
-        }
-
-        //We have a selector for the type: add it to the query
-        if(venueTypeSelection){
-            var cleanSelectionSQL = venueTypeSelection.substring(0, venueTypeSelection.length - 5);
-            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_types WHERE " + cleanSelectionSQL + ") AND ";
-        }
-
-        if(featureSelection){
-            var cleanSelectionSQL = featureSelection.substring(0, featureSelection.length - 5);
-            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_features WHERE " + cleanSelectionSQL + ") AND ";
+            sqlQuery += "venue_id IN (SELECT venue_id FROM venue_features WHERE feature_id=" + req.body.feature[index] + ") AND ";
         }
 
         //Now make the clean query (it currently always ends with ... AND
@@ -100,6 +84,7 @@ module.exports = function (restobar) {
         //Execute the query
         restobar.client.query(cleanQuery) //We use this approach to make sure the query is always executed again
         .on('error', function(error){
+            console.log(error);
             res.json(["ERROR", "An error occurred while accessing the database."]);
         })
         .on('end', function(result){
@@ -112,10 +97,11 @@ module.exports = function (restobar) {
 
     function returnAllVenues(res){
         restobar.client.query({
-            name: "select_all_venues_alphabetically",
-            text: "SELECT * FROM venues ORDER BY name ASC"
+            name: "select_all_venues_alphabetically_with_rating",
+            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues ORDER BY name ASC"
         })
-        .on('error', function(){
+        .on('error', function(error){
+            console.log(error);
             res.json(["ERROR", "An error occurred while accessing the database."]);
         })
         .on('end', function(result){

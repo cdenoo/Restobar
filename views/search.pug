@@ -17,6 +17,9 @@ block headcontent
         #searchResults{
             margin: 0 1em;
         }
+        a.venue{
+            color: #000 !important;
+        }
         .venueContainer{
             padding: 0.25em;
             margin: 0.25em;
@@ -63,14 +66,7 @@ block bodycontent
 
             #searchResults.row
                 p(style="text-align: center;") We are loading the results. Please wait...
-                .venue.col-md-6
-                    .venueContainer.row
-                        .col-xs-3.imgContainer
-                            img(src="https://placeholdit.imgix.net/~text?txtsize=56&txt=600×600&w=600&h=600")
-                        .col-xs-9.
-                            Mijn naam XXXX<br>
-                            Categorieen...<br>
-                            City, Country
+
 
 
     script.
@@ -110,6 +106,55 @@ block bodycontent
             }
 
             function loadResults() {
+
+                function generateStars(rating){
+
+                    var n = 1;
+                    var limit = (parseFloat(rating) + 0.25);
+                    var result = "";
+
+                    //We round it a little bit so that 3.8 stars becomes 4
+                    while(n <= limit){
+                        n++;
+                        result += '<i class="fa fa-star" aria-hidden="true"></i>';
+                    }
+
+                    //Get the decimal part and check if it's >= to 0.25 and smaller than 0.75 (rounding)
+                    var showHalfStar = (rating % 1) > 0.25 && (rating % 1) < 0.75;
+                    if(showHalfStar){
+                        n++;
+                        result += '<i class="fa fa-star-half-o" aria-hidden="true"></i>';
+                    }
+
+                    var starsLeft = 5 - n;
+                    while(starsLeft >= 0){
+                        starsLeft--;
+                        result += '<i class="fa fa-star-o" aria-hidden="true"></i>';
+                    }
+
+                    return result;
+                }
+
+                function formatVenue(venueData){
+                    var result =
+                        '<a class="venue col-md-6" href="/venue/' + venueData.venue_id + '">' +
+                            '<div class="venueContainer row">' +
+                                '<div class="col-xs-3">' +
+                                    '<div class="imgContainer">' +
+                                        '<img src="https://placeholdit.imgix.net/~text?txtsize=56&txt=600×600&w=600&h=600">' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="col-xs-9">' +
+                                    venueData.name + '<br>' +
+                                    generateStars(venueData.rating) + '<br>' +
+                                    venueData.city + ', ' + venueData.country +
+                                '</div>' +
+                            '</div>' +
+                        '</a>';
+
+                    return result;
+                }
+
                 $.post({ //Shorthand for a jquery ajax post request
                     url: "/search",
                     data: getFieldValues(),
@@ -121,18 +166,17 @@ block bodycontent
                         else if (response[0] == "SUCCESS") {
 
                             var venues = response[1];
-                            console.log(venues);
+                            var result = "";
 
                             if(!Object.keys(venues).length){
                                 $("#searchResults").html("<p class='error bg-warning'>We found no venues with these criteria.</p>");
                             }
 
                             for (id in venues) {
-                                $("#searchResults").html("");
-                                console.log(venues[id]);
-
+                                result += formatVenue(venues[id]);
                             }
 
+                            $("#searchResults").html(result);
                         }
                         else {
                             requestError("Unknown status: " + response);
@@ -153,4 +197,4 @@ block bodycontent
         });
 
         //Load initial results
-        //getSearchResults();
+        getSearchResults();
