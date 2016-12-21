@@ -113,6 +113,7 @@ module.exports = function (restobar) {
         var city = req.body.city;
         var country = req.body.country;
         var phoneNumber = req.body.phoneNumber;
+        var email = req.body.email;
         var openingHours = req.body.openingHours;
         var errors = [];
 
@@ -171,8 +172,8 @@ module.exports = function (restobar) {
 
             restobar.client.query({
                 name: "edit_venue",
-                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, opening_hours=$10 WHERE venue_id=$11",
-                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, thisVenueID]
+                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, email=$10, opening_hours=$11 WHERE venue_id=$11",
+                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, email, thisVenueID]
             }, function(err, result){
 
                 if(err){
@@ -264,7 +265,7 @@ module.exports = function (restobar) {
 
             var notInserted = featureArray.length;
 
-            //Insert each type of venue
+            //Insert each feature of venue
             featureArray.forEach(function (feature) {
                 restobar.client.query({
                     name: "link_venue_and_feature",

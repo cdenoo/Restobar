@@ -57,8 +57,12 @@ block bodycontent
                             input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phone_number)
 
                         div(class='form-group')
-                            label(for='feature') * Features:
-                            select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' required multiple)
+                            label(for='email') Email:
+                            input(id='email' class='form-control' type='email' placeholder='Email Address' name='email' value=fields.email)
+
+                        div(class='form-group')
+                            label(for='feature') Features:
+                            select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' multiple)
                                 each feature in possibleFeatures
                                     if feature.selected === "selected"
                                         option(value=feature.feature_id selected) #{feature.name}

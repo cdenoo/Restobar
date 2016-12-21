@@ -65,6 +65,7 @@ module.exports = function (restobar) {
         var city = req.body.city;
         var country = req.body.country;
         var phoneNumber = req.body.phoneNumber;
+        var email = req.body.email;
         var openingHours = req.body.openingHours;
         var errors = [];
 
@@ -123,9 +124,9 @@ module.exports = function (restobar) {
 
             restobar.client.query({
                 name: "create_venue",
-                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coordinate, y_coordinate, phone_number, opening_hours, owner_id) " +
-                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11)",
-                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, req.cookies.user]
+                text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coordinate, y_coordinate, phone_number, email, opening_hours, owner_id) " +
+                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11::text, $12)",
+                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, email, openingHours, req.cookies.user]
             }, function(err, result){
 
                 if(err){
@@ -141,17 +142,28 @@ module.exports = function (restobar) {
                     .on('end', function(result){
                         //Everything went well. Insert all the types and features now.
                         insertFeatures(req, res, errors, result.rowCount + 1);
-                        insertVenueTypes(req, res, errors, result.rowCount + 1);
                     });
             });
         });
     });
 
     function insertFeatures(req, res, errors, venueID) {
-        console.log(req.body);
+
+        var featureArray = [];
+
+        console.log(req.body.type);
+        console.log(Array.isArray(req.body.type));
+        if (!Array.isArray(req.body.type)) {
+            featureArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+        }
+        else {
+            featureArray = req.body.type;
+        }
+
+        var notInserted = featureArray.length;
 
         //Insert each feature of venue
-        req.body.feature.forEach(function(feature){
+        featureArray.forEach(function(feature){
             restobar.client.query({
                 name: "link_venue_and_features",
                 text: "INSERT INTO venue_features (venue_id, feature_id) VALUES($1, $2)",
@@ -165,14 +177,32 @@ module.exports = function (restobar) {
                     return
                 }
 
+                notInserted--;
+
+                if(notInserted == 0) {
+                    //Everything went ok: render the venue page
+                    insertVenueTypes(req, res, errors, venueID);
+                }
+
             });
         });
     }
 
     function insertVenueTypes(req, res, errors, venueID){
 
+        var typeArray = [];
+
+        if(!Array.isArray(req.body.type)){
+            typeArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+        }
+        else{
+            typeArray = req.body.type;
+        }
+
+        var notInserted = typeArray.length;
+
         //Insert each type of venue
-        req.body.type.forEach(function(type){
+        typeArray.forEach(function(type){
             restobar.client.query({
                 name: "link_venue_and_type",
                 text: "INSERT INTO venue_types (venue_id, type_id) VALUES($1, $2)",
@@ -186,10 +216,14 @@ module.exports = function (restobar) {
                     return
                 }
 
+                notInserted--;
+
+                if(notInserted == 0) {
+                    //Everything went ok: render the venue page
+                    res.redirect('venue/' + venueID);
+                }
+
             });
         });
-
-        //Everything went ok: render the venue page
-        res.redirect('venue/' + venueID);
     }
 };
