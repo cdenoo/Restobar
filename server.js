@@ -130,12 +130,8 @@ var RestobarApp = function () {
                 console.log(accessToken);
                 console.log(profile);
 
-                console.log('test before');
-                app.client.query("SELECT * FROM users").on('end', function(res){console.log(res)});
-                console.log('test after');
-
-                //var facebookCallback = require('./facebook_callback.js');
-                //facebookCallback(this.client, accessToken, profile);
+                facebookCallback = require('./facebook_callback.js');
+                facebookCallback(app, accessToken, profile);
                 //this.auth.facebookCallback(this, accessToken, profile);
             }
         ));
