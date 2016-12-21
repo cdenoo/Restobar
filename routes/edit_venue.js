@@ -5,11 +5,12 @@ module.exports = function (restobar) {
     function renderEditVenue(req, res, errorMessages){
 
         if(!req.cookies.user){
-            //We will render the login page if the user is not logged in
+            //We will render the login page if the user is not logged in.
             var errors = ["You need to be logged in to view this page"];
             res.render('login', {title: 'login', errors: errors});
         }
 
+        // The venueID is visible in the URL. We need this now and then.
         thisVenueID = req.originalUrl.split('/')[2];
 
         var possibleVenueTypes;
@@ -25,12 +26,8 @@ module.exports = function (restobar) {
         })
             .on("row", function(row){
                 marked_type_ids.push(row.type_id);
-                console.log(row);
         })
             .on("end", function(){
-
-                console.log("--marked types--");
-                console.log(marked_type_ids);
 
                 //The second query makes sure that the selected types will be marked as selected.
                 restobar.client.query({
@@ -76,11 +73,6 @@ module.exports = function (restobar) {
                                 })
                                 .on('end', function(featuresResult){
                                     possibleFeatures = featuresResult.rows;
-                                    console.log(possibleFeatures);
-                                    console.log(marked_feature_ids);
-
-                                    console.log(possibleVenueTypes);
-                                    console.log(marked_type_ids);
 
                                     //The last query selects all the other information about the venue to be edited.
                                     restobar.client.query({
@@ -106,6 +98,7 @@ module.exports = function (restobar) {
 
     restobar._app.post('/edit_venue/[0-9]*/', function (req, res, next) {
 
+        // Some variables to check the input.
         var name = req.body.name;
         var street = req.body.street;
         var houseNumber = req.body.houseNumber;
@@ -115,8 +108,12 @@ module.exports = function (restobar) {
         var phoneNumber = req.body.phoneNumber;
         var email = req.body.email;
         var openingHours = req.body.openingHours;
+
+        // A variable to store all errors to be shown.
         var errors = [];
 
+        // Some checks whether every field is filled in correctly.
+        // If not, an error is added to the variable 'errors'.
         if(!name){
             errors.push("Please enter a name for the venue.");
         }
@@ -141,12 +138,13 @@ module.exports = function (restobar) {
             errors.push("Please enter a country.");
         }
 
+        // If there is one or more errors, the edit_venue page is loaded with the errors on top of it.
         if(errors.length){
             renderEditVenue(req, res, errors);
             return;
         }
 
-        //Get the coordinates of google
+        //Get the coordinates from Google.
         restobar.googleMapsClient.geocode({
             address: street + ' ' + houseNumber + ', ' + postalCode + ' ' +  city + ', ' + country
         }, function(err, response) {
@@ -170,6 +168,7 @@ module.exports = function (restobar) {
                 longitude = -1;
             }
 
+            // A query that updates information of the venue in the database.
             restobar.client.query({
                 name: "edit_venue",
                 text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, email=$10, opening_hours=$11 WHERE venue_id=$12",
@@ -183,12 +182,14 @@ module.exports = function (restobar) {
                     return
                 }
 
-                //Everything went well. Insert all the types now.
+                // Everything went well. Insert all the types now.
+                // This is done by first deleting the old ones and then inserting the new.
                 deleteOldVenueTypes(req, res, errors, thisVenueID);
             });
         });
     });
 
+    // First we delete the old venue types.
     function deleteOldVenueTypes(req, res, errors, venueID){
         restobar.client.query({
             name: "delete_old_venuetypes",
@@ -196,16 +197,16 @@ module.exports = function (restobar) {
             values: [venueID]
         })
             .on('end', function(){
+                // When the old types are deleted, we insert the new.
                 insertVenueTypes(req, res, errors, venueID)
             })
     }
 
+    // Then we insert the new venue types.
     function insertVenueTypes(req, res, errors, venueID){
 
         var typeArray = [];
 
-        console.log(req.body.type);
-        console.log(Array.isArray(req.body.type));
         if(!Array.isArray(req.body.type)){
             typeArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
         }
@@ -215,7 +216,7 @@ module.exports = function (restobar) {
 
         var notInserted = typeArray.length;
 
-        //Insert each type of venue
+        // Insert each type of venue, one after the other.
         typeArray.forEach(function(type){
             restobar.client.query({
                 name: "link_venue_and_type",
@@ -225,7 +226,6 @@ module.exports = function (restobar) {
 
                 if(typeErr){
                     errors.push("Something went wrong while saving the venue type. All other data has been saved.");
-                    //TODO open render modify venue form instead, as all other information has been saved.
                     renderEditVenue(req, res, errors);
                     return;
                 }
@@ -233,12 +233,13 @@ module.exports = function (restobar) {
                 notInserted--;
 
                 if(notInserted == 0){
-                    //We are finished executing: render page
+                    //We are finished with the venue types, we continue with the venue features.
                     deleteOldFeatures(req, res, errors, venueID)
                 }
             });
         });
 
+        // Similar to the venue types, we first delete the old venue features.
         function deleteOldFeatures(req, res, errors, venueID){
             restobar.client.query({
                 name: "delete_old_features",
@@ -246,16 +247,16 @@ module.exports = function (restobar) {
                 values: [venueID]
             })
                 .on('end', function(){
+                    // When the old features are deleted, we insert the new.
                     insertVenueFeatures(req, res, errors, venueID)
                 })
         }
 
+        // Then we insert the new venue features.
         function insertVenueFeatures(req, res, errors, venueID) {
 
             var featureArray = [];
 
-            console.log(req.body.type);
-            console.log(Array.isArray(req.body.type));
             if (!Array.isArray(req.body.type)) {
                 featureArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
             }
@@ -275,7 +276,6 @@ module.exports = function (restobar) {
 
                     if (featureErr) {
                         errors.push("Something went wrong while saving the venue type. All other data has been saved.");
-                        //TODO open render modify venue form instead, as all other information has been saved.
                         renderEditVenue(req, res, errors);
                         return;
                     }
@@ -283,7 +283,7 @@ module.exports = function (restobar) {
                     notInserted--;
 
                     if (notInserted == 0) {
-                        //We are finished executing: render page
+                        //We are finished executing: render page.
                         res.redirect('/venue/' + venueID);
                     }
                 });
