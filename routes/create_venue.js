@@ -125,7 +125,7 @@ module.exports = function (restobar) {
             restobar.client.query({
                 name: "create_venue",
                 text: "INSERT INTO venues (name, street, house_number, postal_code, city, country, x_coordinate, y_coordinate, phone_number, email, opening_hours, owner_id) " +
-                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11::text, $12)",
+                "VALUES($1::text, $2::text, $3::text, $4::text, $5::text, $6::text, $7, $8, $9::text, $10::text, $11::text, $12) RETURNING venue_id",
                 values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, email, openingHours, req.cookies.user]
             }, function(err, result){
 
@@ -135,14 +135,12 @@ module.exports = function (restobar) {
                     renderCreateVenue(req, res, errors);
                     return
                 }
-                restobar.client.query({
-                    name: "count_all_venues",
-                    text: "SELECT * FROM venues"
-                })
-                    .on('end', function(result){
-                        //Everything went well. Insert all the types and features now.
-                        insertFeatures(req, res, errors, result.rowCount + 1);
-                    });
+
+                var venueID = result.rows[0].venue_id;
+
+                //Start with inserting the features
+                //After the features are inserted, the venue types will be inserted as well.
+                insertFeatures(req, res, errors, venueID);
             });
         });
     });
@@ -180,7 +178,7 @@ module.exports = function (restobar) {
                 notInserted--;
 
                 if(notInserted == 0) {
-                    //Everything went ok: render the venue page
+                    //Everything is still ok: insert venue types.
                     insertVenueTypes(req, res, errors, venueID);
                 }
 
