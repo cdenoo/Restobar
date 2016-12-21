@@ -134,8 +134,8 @@ var RestobarApp = function () {
                 RestobarApp.client.query("SELECT * FROM users").on('end', function(res){console.log(res)});
                 console.log('test');
 
-                var facebookCallback = require('./facebook_callback.js');
-                facebookCallback(this.client, accessToken, profile);
+                //var facebookCallback = require('./facebook_callback.js');
+                //facebookCallback(this.client, accessToken, profile);
                 //this.auth.facebookCallback(this, accessToken, profile);
             }
         ));
