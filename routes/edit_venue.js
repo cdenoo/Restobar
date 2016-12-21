@@ -25,8 +25,12 @@ module.exports = function (restobar) {
         })
             .on("row", function(row){
                 marked_type_ids.push(row.type_id);
+                console.log(row);
         })
             .on("end", function(){
+
+                console.log("--marked types--");
+                console.log(marked_type_ids);
 
                 //The second query makes sure that the selected types will be marked as selected.
                 restobar.client.query({
@@ -179,36 +183,28 @@ module.exports = function (restobar) {
                 }
 
                 //Everything went well. Insert all the types now.
-                deleteOldVenueTypes(thisVenueID);
-                insertVenueTypes(req, res, errors, thisVenueID);
-                res.redirect('../venue/' + thisVenueID);
+                deleteOldVenueTypes(req, res, errors, thisVenueID);
             });
         });
     });
 
-    function deleteOldVenueTypes(venueID){
+    function deleteOldVenueTypes(req, res, errors, venueID){
         var oldTypes = [];
         restobar.client.query({
             name: "select_old_venuetypes",
-            text: "SELECT * FROM venue_types WHERE venue_id=$1",
+            text: "DELETE FROM venue_types WHERE venue_id=$1",
             values: [venueID]
         })
-            .on('row', function(row){
-                console.log(row);
-                oldTypes.push(row);
-            })
             .on('end', function(){
-                oldTypes.forEach(function(type){
-                    restobar.client.query({
-                        name: "delete_old_venuetypes",
-                        text: "DELETE FROM venue_types WHERE type_id=$1",
-                        values: [type]
-                    })
-                })
+                insertVenueTypes(req, res, errors, venueID)
             })
     }
 
     function insertVenueTypes(req, res, errors, venueID){
+
+        var notInserted = req.body.type.length;
+
+        console.log(req.body.type[0]);
 
         //Insert each type of venue
         req.body.type.forEach(function(type){
@@ -224,10 +220,16 @@ module.exports = function (restobar) {
                     renderEditVenue(req, res, errors);
                     return;
                 }
+
+                notInserted--;
+
+                if(notInserted == 0){
+                    //We are finished executing: render page
+                    res.redirect('/venue/' + venueID);
+                }
             });
         });
 
-        //Everything went ok: render the venue page
-        res.render('venue', {title: 'Venue', userID: req.cookies.user, venueID: venueID});
+
     }
 };
