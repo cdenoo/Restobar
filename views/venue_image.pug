@@ -28,6 +28,8 @@ block bodycontent
                         | The current image of this venue:<br>
                         img(src=venueData.image_url)
 
+                    p#preview
+
                     form(method='POST' enctype="multipart/form-data" style="text-align: center;")
 
                         h2 Upload a new image
@@ -37,3 +39,17 @@ block bodycontent
 
                         div
                             button(class='btn btn-default' type='submit') Save
+
+    script.
+        $(function(){
+            $("#image").on("change" , function(){
+                var fileInput = document.getElementById("image");
+                var fileList = fileInput.files;
+
+                var file = fileList[0];
+
+                if(file.type.indexOf("image") < 0){
+                    alert("Please choose an image!");
+                }
+            })
+        });
