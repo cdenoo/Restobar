@@ -32,6 +32,7 @@ block headcontent
             width: auto;
             height: auto;
         }
+    script(src='/scripts/weather.js')
 
 block bodycontent
 
@@ -58,6 +59,9 @@ block bodycontent
             input.form-control(id="city" type="text" name="city" placeholder="City")
 
         .col-sm-7.col-md-9
+
+            p#weather.bg-primary(style="padding: 0.5em; text-align: center")
+
             if errors
                 each error in errors
                     .error.bg-danger #{error}
@@ -198,3 +202,7 @@ block bodycontent
 
         //Load initial results
         getSearchResults();
+
+        $(function () {
+            getWeatherOnLocation($("#weather"));
+        });
