@@ -23,7 +23,7 @@ block bodycontent
                             label(for='type') Type:
                             select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
                                 each type in possibleVenueTypes
-                                    if type.selected === "selected"
+                                    if type.selected == true
                                         option(value=type.type_id selected) #{type.type_name}
                                     else
                                         option(value=type.type_id) #{type.type_name}
@@ -60,7 +60,7 @@ block bodycontent
                             label(for='feature') Feature:
                             select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' required multiple)
                                 each feature in possibleFeatures
-                                    if feature.selected === "selected"
+                                    if feature.selected == true
                                         option(value=feature.feature_id selected) #{feature.name}
                                     else
                                         option(value=feature.feature_id) #{feature.name}
