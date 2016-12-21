@@ -13,6 +13,7 @@ block bodycontent
             div(class='panel panel-default')
                 div(class='panel-body')
 
+                    // If there is one or more errors, we show them on top.
                     if errors
                         each error in errors
                             .error #{error}
@@ -75,20 +76,6 @@ block bodycontent
                         div(class='form-group')
                             label(for='openingHours') Opening Hours:
                             textarea(id='openingHours' class='form-control' name='openingHours') #{fields.opening_hours}
-
-                        //TODO add facebook and twitter urls
-                        //div(class='form-group')
-                        //    label(for='facebookUrl') * Facebook URL:
-                        //    input(id='facebookUrl' class='form-control' type='url' placeholder='Facebook URL' name='cofacebookUrluntry')
-
-                        //div(class='form-group')
-                        //    label(for='twitterUrl') * Twitter URL:
-                        //    input(id='twitterUrl' class='form-control' type='url' placeholder='Twitter URL' name='twitterUrl')
-
-                        //TODO add email
-                        //div(class='form-group')
-                        //    label(for='email') * Email:
-                        //    input(id='email' class='form-control' type='email' placeholder='Email address' name='email' /*required*/)
 
                         div
                             button(class='btn btn-default' type='submit') Save

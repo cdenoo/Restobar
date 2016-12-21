@@ -104,7 +104,7 @@ module.exports = function (restobar) {
             return;
         }
 
-        // A query to update the information about the user.
+        // A query to update the information about the user in the database.
         restobar.client.query({
             name: "update_user",
             text: "UPDATE users SET username=$2, password=$3, first_name=$4, last_name=$5, email=$6, gender=$7 WHERE user_id=$1",

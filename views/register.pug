@@ -10,32 +10,43 @@ block bodycontent
         div(class='container-fluid')
             div(class='panel panel-default')
                 div(class='panel-body')
+
+                    // If there is one or more errors, we show them on top.
                     if errors
                         each error in errors
                             .error.bg-danger #{error}
 
+                    // This form must be filled in to get all the information of the user.
                     form(class='registerForm' method='POST')
+
                         div(class='form-group')
                             label(for='username') * Username:
                             input(id='username' class='form-control' type='text' placeholder='Username' value=fields.username name='username' required)
+
                         div(class='form-group')
                             label(for='pw') * Password:
                             input(id='pw' class='form-control' type='password' placeholder='Password' name='password' required)
+
                         div(class='form-group')
                             label(for='pw2') * Confirm Password:
                             input(id='pw2' class='form-control' type='password' placeholder='Repeat password' name='confirmPassword' required)
+
                         div(class='form-group')
                             label(for='firstName') * First name:
                             input(id='firstName' class='form-control' type='text' placeholder='First name' value=fields.firstName name='firstName' required)
+
                         div(class='form-group')
                             label(for='lastName') * Last name:
                             input(id='lastName' class='form-control' type='text' placeholder='Last name' value=fields.lastName name='lastName' required)
+
                         div(class='form-group')
                             label(for='email') * Email:
                             input(id='email' class='form-control' type='email' placeholder='Email address' value=fields.email name='email' required)
+
                         div(class='form-group')
                             label(for='birthday') * Birthday:
                             input(id='birthday' class='form-control' type='date' placeholder='dd/mm/yyyy' value=fields.birthday name='birthday' required)
+
                         div(class='form-group')
                             label * Gender
                             div(class='input-group')
@@ -44,8 +55,9 @@ block bodycontent
                                     a(class='btn btn-primary inactive' data-toggle='gender' data-title='female') Female
                                     a(class='btn btn-primary inactive' data-toggle='gender' data-title='other') Other
                                 input(type='hidden' name='gender' id='gender' value='male' required)
-                        //-We choose a button with buttontype 'primary'.
+
                         div
                             button(class='btn btn-default' type='submit') Register
+
                 div(class='panel-footer')
                     | Fields marked with * are required.

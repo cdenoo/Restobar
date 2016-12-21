@@ -5,12 +5,14 @@ module.exports = function (restobar) {
 
     function renderRegisterForm(req, res, errorMessages) {
 
-        //Test if the user is actually logged in: redirect to the homepage
+        // Test if the user is actually logged in.
         if(restobar.userID > 0){
+            // If so, we redirect to the homepage, it is not necessarry to register because this user already has an account.
             res.redirect('/');
             return;
         }
 
+        // Otherwise we go to the registerpage.
         res.render('register', {title: 'Register', errors: errorMessages, fields: req.body});
     }
 
@@ -20,6 +22,7 @@ module.exports = function (restobar) {
 
     restobar._app.post('/register', function (req, res, next) {
 
+        // Some variables to check the input.
         var username        = req.body.username;
         var password        = req.body.password;
         var confirmPassword = req.body.confirmPassword;
@@ -29,10 +32,13 @@ module.exports = function (restobar) {
         var birthday        = req.body.birthday;
         var gender          = req.body.gender;
 
-        var str; //Een string waarmee we gaan controleren of de input van het juiste type is (met Regex).
+        var str; // A string for Regex checks.
 
+        // A variable to store all errors to be shown.
         var errors = [];
 
+        // Some checks whether every field is filled in correctly.
+        // If not, an error is added to the variable 'errors'.
         if(!username){
             errors.push("Please enter a username.");
         }
@@ -76,9 +82,10 @@ module.exports = function (restobar) {
 
         var birthdayDate = new Date();
 
-        //We have 2 possibilities for birthdays: some browsers do not support type="date"
-        //Case 1: supporting browsers. Format: YYYY-MM-DD
+        // We have 2 possibilities for birthdays: some browsers (like Safari) do not support type="date".
+        // Case 1: supporting browsers. Format: YYYY-MM-DD.
         if(birthday){
+            // Calculate the date/time object for the birthday.
             var birthdayArray = birthday.split("-");
             birthdayDate.setYear(birthdayArray[0]);
             birthdayDate.setMonth(birthdayArray[1]);
@@ -86,8 +93,9 @@ module.exports = function (restobar) {
         }
 
 
+        // Case 2: non-supporting browsers. Format: DD/MM_YYYY.
         if(isNaN(birthdayDate.getTime())){
-            //Calculate the date/time object for the birthday.
+            // Calculate the date/time object for the birthday.
             var birthdayArray = birthday.split("/");
             var birthdayDate  = new Date();
             birthdayDate.setDate(birthdayArray[0]);
@@ -96,7 +104,7 @@ module.exports = function (restobar) {
         }
 
         if(isNaN(birthdayDate.getTime())){
-            //Still an invalid value
+            // Still an invalid date: error.
             errors.push("Please enter a valid date as birthday.");
         }
 
@@ -112,17 +120,20 @@ module.exports = function (restobar) {
                 break;
         }
 
+        // If there is one or more errors, the register page is loaded with the errors on top of it.
         if(errors.length){
             renderRegisterForm(req, res, errors);
             return;
         }
 
+        // A query to insert the information of the user in the database.
         restobar.client.query({
             name: "add_user",
             text: "INSERT INTO users(username, password, first_name, last_name, email, birthday, gender)" +
                   "values($1, $2, $3, $4, $5, $6, $7)",
             values: [username, password, firstName, lastName, email, birthdayDate.getMilliseconds(), gender]
         }, function(err, result) {
+            // After the information is inserted, we let the user know everything went well: the register_success-page is loaded.
             res.render('register_success', {title: 'Registered'});
         });
     });
