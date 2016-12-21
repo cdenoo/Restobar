@@ -184,38 +184,38 @@ block bodycontent
 
                 .content #{review.comments}
 
-    script.
-        var tempfav = #{favorite};
+    if userID
+        script.
+            var tempfav = #{favorite};
 
-        $(document).ready(function () {
-            if (tempfav) {
-                $('#favbutton').css('color', 'red');
-            } else {
-                $('#favbutton').css('color', 'black');
-            }
-        });
-
-        $('#favbutton').on('click', function () {
-            if (tempfav) {
-                $('#favbutton').css('color', 'black');
-                tempfav = false;
-            } else {
-                tempfav = true;
-                $('#favbutton').css('color', 'red');
-            }
-
-            $.ajax({
-                url: '/favorites',
-                type: 'put',
-                data: {userID: #{userID}, venueID: #{venueData.venue_id}, fav: false}
+            $(document).ready(function () {
+                if (tempfav) {
+                    $('#favbutton').css('color', 'red');
+                } else {
+                    $('#favbutton').css('color', 'black');
+                }
             });
-        });
+            $('#favbutton').on('click', function () {
+                if (tempfav) {
+                    $('#favbutton').css('color', 'black');
+                    tempfav = false;
+                } else {
+                    tempfav = true;
+                    $('#favbutton').css('color', 'red');
+                }
 
-         $(function(){
+                $.ajax({
+                    url: '/favorites',
+                    type: 'put',
+                    data: {userID: #{userID}, venueID: #{venueData.venue_id}, fav: false}
+                });
+            });
+    script.
+        $(function () {
             createMap(false);
             createMarker(#{venueData.y_coordinate}, #{venueData.x_coordinate}, '#{venueData.name}');
             setMapCenter(#{venueData.y_coordinate}, #{venueData.x_coordinate});
             map.setOptions({ //We don't want the map to zoom on scroll
                 scrollwheel: false
             });
-         });
+        });
