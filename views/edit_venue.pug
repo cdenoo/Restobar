@@ -18,9 +18,11 @@ block bodycontent
                         each error in errors
                             .error #{error}
 
+                    // A button to upload an image for the venue.
                     p(style="text-align: center;")
                         a(href="/venue_image/" + fields.venue_id class="btn btn-default") Modify Image
 
+                    // This form must be filled in to edit the information of the venue.
                     form(class='registerForm' method='POST')
 
                         div(class='form-group')
