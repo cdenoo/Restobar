@@ -72,7 +72,7 @@ module.exports = function (restobar) {
             objectResultQuery(
                 {
                     name: 'select_all',
-                    text: 'SELECT * FROM users'
+                    text: 'SELECT first_name, last_name FROM users'
                 },
                 res,
                 next);
