@@ -4,6 +4,9 @@ module.exports = function (restobar, accessToken, profile){
         text: 'SELECT * FROM users WHERE fb_user_id=$1',
         values: [profile.id]
     })
+        .on('error', function(error){
+            console.log(error);
+        })
         .on('end', function(result){
             if(!result.rowCount){ //There is no user with this fb_user_id so we register a new user.
                 facebook_register();

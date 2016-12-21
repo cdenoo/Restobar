@@ -92,7 +92,7 @@ module.exports = function (restobar) {
                                             res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                                         })
                                         .on('end', function(result){
-                                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  possibleVenueTypes: possibleVenueTypes, possibleFeatures: possibleFeatures, fields: result.rows[0]});
+                                            res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages, possibleVenueTypes: possibleVenueTypes, possibleFeatures: possibleFeatures, fields: result.rows[0]});
                                         })
                                 })
                         });
@@ -172,8 +172,8 @@ module.exports = function (restobar) {
 
             restobar.client.query({
                 name: "edit_venue",
-                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, email=$10, opening_hours=$11 WHERE venue_id=$11",
-                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, openingHours, email, thisVenueID]
+                text: "UPDATE venues SET name=$1, street=$2, house_number=$3, postal_code=$4, city=$5, country=$6, x_coordinate=$7, y_coordinate=$8, phone_number=$9, email=$10, opening_hours=$11 WHERE venue_id=$12",
+                values: [name, street, houseNumber, postalCode, city, country, longitude, latitude, phoneNumber, email, openingHours, thisVenueID]
             }, function(err, result){
 
                 if(err){
