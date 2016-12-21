@@ -25,7 +25,6 @@ function getWeather(lat, lon, $cont) {
 function getWeatherOnLocation($cont){
 
     function locationCallback(location){
-        console.log(location);
         if(location){
             getWeather(location.coords.latitude, location.coords.longitude, $cont);
         }
