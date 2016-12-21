@@ -33,16 +33,16 @@ module.exports = function (restobar) {
                     name: "select_possible_venue_types_for_edit",
                     text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
                 })
-                .on('row', function(row, venueTypesResult){
+                .on("row", function(row, venueTypesResult){
                     if(row.type_id in marked_type_ids){
                         row.selected = true;
                     }
                     venueTypesResult.addRow(row);
                 })
-                .on('error', function(){
+                .on("error", function(){
                     res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                 })
-                .on('end', function(venueTypesResult){
+                .on("end", function(venueTypesResult){
                     possibleVenueTypes = venueTypesResult.rows;
 
                     //The third query selects all feature ids of the venue that will be edited.
@@ -214,8 +214,7 @@ module.exports = function (restobar) {
         req.body.type.forEach(function(type){
             restobar.client.query({
                 name: "link_venue_and_type",
-                text: "INSERT INTO venue_types (venue_id, type_id) " +
-                "VALUES($1, $2)",
+                text: "INSERT INTO venue_types (venue_id, type_id) VALUES($1, $2)",
                 values: [venueID, type]
             }, function(typeErr, typeResult){
 
@@ -223,9 +222,8 @@ module.exports = function (restobar) {
                     errors.push("Something went wrong while saving the venue type. All other data has been saved.");
                     //TODO open render modify venue form instead, as all other information has been saved.
                     renderEditVenue(req, res, errors);
-                    return
+                    return;
                 }
-
             });
         });
 
