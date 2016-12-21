@@ -5,7 +5,8 @@ module.exports = function (restobar) {
     restobar._app.get('/auth/facebook/callback',
         restobar.passport.authenticate('facebook', { failureRedirect: '/login' }),
         function(req, res){
-        res.redirect('/');
+            console.log('hello');
+            res.redirect('/');
     });
 
 };
