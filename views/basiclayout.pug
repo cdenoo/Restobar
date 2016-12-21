@@ -31,4 +31,9 @@ html
 						else
 							li
 								a(href='/login') Login
+					if userID > 0
+						ul.nav.navbar-nav.navbar-right
+							li
+								a(href='/logout') Logout
+
 			block bodycontent
