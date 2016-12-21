@@ -74,6 +74,9 @@ var RestobarApp = function () {
 
         var api = require('./routes/api');
         api(this);
+
+        var fav = require('./routes/favorites');
+        fav(this);
     };
 
     this.initErrorHandling = function () {
@@ -118,6 +121,7 @@ var RestobarApp = function () {
 
         this.client = client;
 
+        this.client.query({text: 'CREATE TABLE IF NOT EXISTS favorites (user_id integer NOT NULL, venue_id integer NOT NULL, fav boolean NOT NULL)'});
     };
 
     this.initGoogleMaps = function(){

@@ -122,6 +122,40 @@ block bodycontent
         if userID == venueData.owner_id
             p(style="text-align: center;")
                 a.btn.btn-default(href='/edit_venue/' + venueData.venue_id) Edit
+        p(style="text-align: center")
+            if userID
+                button.btn.btn-default.glyphicon.glyphicon-heart(id='favbutton')
+                    |  Favorite
+    script.
+        var tempfav = #{favorite};
+
+        $(document).ready(function () {
+            if (tempfav) {
+                $('#favbutton').css('color', 'red');
+            } else {
+                $('#favbutton').css('color', 'black');
+            }
+        });
+
+        $('#favbutton').on('click', function () {
+            if(tempfav){
+                $('#favbutton').css('color', 'black');
+                tempfav = false;
+                $.ajax({
+                    url: '/favorites',
+                    type: 'put',
+                    data: {userID: #{userID}, venueID: #{venueData.venue_id}, fav: false}
+                });
+            } else {
+                tempfav = true;
+                $('#favbutton').css('color', 'red');
+                $.ajax({
+                    url: '/favorites',
+                    type: 'put',
+                    data: {userID: #{userID}, venueID: #{venueData.venue_id}, fav: true}
+                });
+            }
+        });
 
     #googlemap
 
