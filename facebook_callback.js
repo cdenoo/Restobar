@@ -35,7 +35,7 @@ module.exports = function (restobar, accessToken, profile){
         restobar.client.query({
             name: 'facebook_login',
             text: 'UPDATE users SET fb_access_token=$1 WHERE fb_user_id=$2',
-            //For each time a user logs in, he has a new accessToken, so we update this in the database.
+            //Each time a user logs in, he has a new accessToken, so we update this in the database.
             values: [accessToken, profile.id]
         })
             .on('error', function(error){

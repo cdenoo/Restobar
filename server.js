@@ -142,10 +142,10 @@ var RestobarApp = function () {
         this.initVariables();
         this.initPublicDir();
         this.initViews();
+        this.initDB();
         this.initFacebookLogin();
         this.initRoutes();
         this.initErrorHandling();
-        this.initDB();
         this.initGoogleMaps();
         this._app.listen(this._port);
 
