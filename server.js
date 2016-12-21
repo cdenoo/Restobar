@@ -122,6 +122,13 @@ var RestobarApp = function () {
 
     this.initFacebookLogin = function(){
         //passport.initialize();
+        passport.serializeUser(function(user, done){
+            done(null, user);
+        })
+        passport.deserializeUser(function(object, done){
+            done(null, object);
+        })
+
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
                 clientSecret: "2b1497398b4ca050f8827165c51049c8",
