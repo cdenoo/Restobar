@@ -6,6 +6,47 @@ block headercontent
     //remove header
 block bodycontent
 
+    mixin spotlightArticle(cl, id, image, title)
+
+        - image = image ? image : '/images/restobar_logo.png';
+
+        div(class=cl)
+            a.venue(href="/venue/" + id)
+                img(src=image)
+                span #{title}
+
+    mixin smallArticle(id, image, title, rating, ratingCount)
+
+        - image = image ? image : '/images/restobar_logo.png';
+
+        a.venue.row(href="/venue/" + id)
+            span.imgContainer.col-xs-3
+                img(src=image)
+            span.infoContainer.row-xs-9
+                span.title #{title}
+
+                unless ratingCount = 0
+                    br
+                    span.stars
+                        - var n = 1;
+                        - var limit = (parseFloat(rating) + 0.25);
+                        //We round it a little bit so that 3.8 stars becomes 4
+                        while n <= limit
+                            - n++;
+                            i.fa.fa-star(aria-hidden='true')
+
+                        //Get the decimal part and check if it's >= to 0.25 and smaller than 0.75 (rounding)
+                        - var showHalfStar = (rating % 1) > 0.25 && (rating % 1) < 0.75;
+                        if showHalfStar
+                            - n++;
+                            i.fa.fa-star-half-o(aria-hidden='true')
+
+                        - var starsLeft = 5 - n;
+                        while starsLeft >= 0
+                            - starsLeft--;
+                            i.fa.fa-star-o(aria-hidden='true')
+
+
     #splashBlock
         #overlay
             #logoWrapper
@@ -15,66 +56,63 @@ block bodycontent
 
             form#search.row(method="post" name="search" action="#")
                 .input-group.input-group-lg
-                    input(type="text" name="search" class="form-control" placeholder="What do you want to eat?...")
+                    input(type="text" name="search" class="form-control" placeholder="Search a venue")
                     span.input-group-btn
                         button.btn.btn-default(type="button")
                             | Search!
 
     .container-fluid
 
-        section#spotlight
-            h2
-                | Recommended by others
-            .row
-                .col-md-3
-                    a.venue(href="#")
-                        img(src="http://cdn.theculturetrip.com/wp-content/uploads/2016/02/restaurant-939435_960_720.jpg")
-                        span
-                            | TITLE
+        if nmbRecommendations
+            section#spotlight
+                h2
+                    | Recommended by others
+                .row
 
-                .col-md-3
-                    a.venue(href="#")
-                        img(src="http://www.nandos.com/sites/all/themes/nandos/images/restaurants/restaurant-carousel-1.jpg")
-                        span
-                            | TITLE
+                    if nmbRecommendations == 1
+                        .col-md-4 &nbsp;
+                        +spotlightArticle('col-md-4', recommendations[0].venue_id, recommendations[0].image_url, recommendations[0].name)
+                        .col-md-4 &nbsp;
 
-                .col-md-3
-                    a.venue(href="#")
-                        img(src="https://s3.eu-central-1.amazonaws.com/restoathome/5710b2af64cfd.jpg")
-                        span
-                            | TITLE
+                    if nmbRecommendations == 2
+                        .col-md-3 &nbsp;
+                        each val in recommendations
+                            +spotlightArticle('col-md-3', val.venue_id, val.image_url, val.name)
+                        .col-md-3 &nbsp;
 
-                .col-md-3
-                    a.venue(href="#")
-                        img(src="https://www.soelden.com/urlaub/images/SD/WI/headerbilder/aktivitaeten_header_restaurant,method=scale,prop=data,id=1200-510.jpg")
-                        span
-                            | TITLE
+                    if nmbRecommendations == 3
+                        each val in recommendations
+                            +spotlightArticle('col-md-4', val.venue_id, val.image_url, val.name)
+
+                    if nmbRecommendations == 4
+                        each val in recommendations
+                            +spotlightArticle('col-md-3', val.venue_id, val.image_url, val.name)
 
 
         section#personalRecommendations.row
-            #neighbourhood.col-md-6
-                h3
-                    | In the neighbourhood
-                a.venue.row
-                    span.imgContainer.col-xs-3
-                        img(src="http://cdn.theculturetrip.com/wp-content/uploads/2016/02/restaurant-939435_960_720.jpg")
-                    span.infoContainer.row-xs-9
-                        span.title
-                            | Title
-                        br
-                        span.stars
-                            | <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-half-o" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i>
+            #leftCol.col-md-6
+                h3 Recently Ratings
+
+                each val in recentlyRated
+                    +smallArticle(val.venue_id, val.image_url, val.name, val.rating)
 
 
-            #favourites.col-md-6
-                h3
-                    | Your favourites
+            #rightCol.col-md-6
+                if userID
+                    h3 Your favourites
+                    each val in userFavorites
+                        +smallArticle(val.venue_id, val.image_url, val.name, val.rating, val.rating_count)
 
-    script
-        | $(".container-fluid:first-of-type").removeClass("container-fluid");
-    | Todo : Add index content
+                else
+                    //User is not logged in
+                    h3 Recently Added
+                    each val in recentlyAdded
+                        +smallArticle(val.venue_id, val.image_url, val.name, val.rating, val.rating_count)
+
     script(src='/scripts/weather.js')
     script.
+        $(".container-fluid:first-of-type").removeClass("container-fluid");
+
         $(function(){
             getLocation();
         });
