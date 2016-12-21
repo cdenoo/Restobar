@@ -121,7 +121,7 @@ var RestobarApp = function () {
     };
 
     this.initFacebookLogin = function(){
-        //passport.initialize();
+        passport.initialize();
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
                 clientSecret: "2b1497398b4ca050f8827165c51049c8",
@@ -131,7 +131,7 @@ var RestobarApp = function () {
                 console.log(accessToken);
                 console.log(profile);
 
-                facebookCallback = require('./facebook_callback.js');
+                var facebookCallback = require('./facebook_callback.js');
                 facebookCallback(app, accessToken, profile);
                 //this.auth.facebookCallback(this, accessToken, profile);
                 return done(null, 5);
