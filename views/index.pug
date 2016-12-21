@@ -117,10 +117,15 @@ block bodycontent
 
 
             #rightCol.col-md-6
+                - var showFavorites = userFavorites && userFavorites.length;
                 if userID
-                    h3 Your favourites
-                    each val in userFavorites
-                        +smallArticle(val.venue_id, val.image_url, val.name, val.rating, val.rating_count)
+                    if showFavorites
+                        h3 Your favorites
+                        each val in userFavorites
+                            +smallArticle(val.venue_id, val.image_url, val.name, val.rating, val.rating_count)
+                    else
+                        h3 Your favorites
+                        p You don't have any favorites. What are you waiting for?
 
                 else
                     //User is not logged in

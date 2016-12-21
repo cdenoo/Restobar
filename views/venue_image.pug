@@ -1,6 +1,11 @@
 extends basiclayout
 block headcontent
     script(src='./scripts/registerscripts.js')
+    style.
+        #venueImage {
+            max-width: 20em;
+            height: auto;
+        }
 
 block bodycontent
     div(class='col-lg-4 col-centered')
@@ -26,7 +31,7 @@ block bodycontent
 
                     p(style="text-align: center;")
                         | The current image of this venue:<br>
-                        img(src=venueData.image_url)
+                        img#venueImage(src=venueData.image_url)
 
                     p#preview
 

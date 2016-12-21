@@ -15,6 +15,10 @@ block headcontent
             display: inline-block;
             margin-right: 1em;
         }
+        #venueImage{
+            max-width: 20em;
+            height: auto;
+        }
         #details .tag {
             font-weight: bold;
         }
@@ -100,7 +104,7 @@ block bodycontent
                     i.fa.fa-star-o(aria-hidden='true')
 
         div(style="text-align: center;")
-            img(src=venueData.image_url)
+            img#venueImage(src=venueData.image_url)
 
         h2 Details
 
