@@ -189,9 +189,8 @@ module.exports = function (restobar) {
     });
 
     function deleteOldVenueTypes(req, res, errors, venueID){
-        var oldTypes = [];
         restobar.client.query({
-            name: "select_old_venuetypes",
+            name: "delete_old_venuetypes",
             text: "DELETE FROM venue_types WHERE venue_id=$1",
             values: [venueID]
         })
@@ -202,12 +201,21 @@ module.exports = function (restobar) {
 
     function insertVenueTypes(req, res, errors, venueID){
 
-        var notInserted = req.body.type.length;
+        var typeArray = [];
 
-        console.log(req.body.type[0]);
+        console.log(req.body.type);
+        console.log(Array.isArray(req.body.type));
+        if(!Array.isArray(req.body.type)){
+            typeArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+        }
+        else{
+            typeArray = req.body.type;
+        }
+
+        var notInserted = typeArray.length;
 
         //Insert each type of venue
-        req.body.type.forEach(function(type){
+        typeArray.forEach(function(type){
             restobar.client.query({
                 name: "link_venue_and_type",
                 text: "INSERT INTO venue_types (venue_id, type_id) VALUES($1, $2)",
@@ -225,11 +233,60 @@ module.exports = function (restobar) {
 
                 if(notInserted == 0){
                     //We are finished executing: render page
-                    res.redirect('/venue/' + venueID);
+                    deleteOldFeatures(req, res, errors, venueID)
                 }
             });
         });
 
+        function deleteOldFeatures(req, res, errors, venueID){
+            restobar.client.query({
+                name: "delete_old_features",
+                text: "DELETE FROM venue_features WHERE venue_id=$1",
+                values: [venueID]
+            })
+                .on('end', function(){
+                    insertVenueFeatures(req, res, errors, venueID)
+                })
+        }
 
+        function insertVenueFeatures(req, res, errors, venueID) {
+
+            var featureArray = [];
+
+            console.log(req.body.type);
+            console.log(Array.isArray(req.body.type));
+            if (!Array.isArray(req.body.type)) {
+                featureArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+            }
+            else {
+                featureArray = req.body.type;
+            }
+
+            var notInserted = featureArray.length;
+
+            //Insert each type of venue
+            featureArray.forEach(function (feature) {
+                restobar.client.query({
+                    name: "link_venue_and_feature",
+                    text: "INSERT INTO venue_features (venue_id, feature_id) VALUES($1, $2)",
+                    values: [venueID, feature]
+                }, function (featureErr, typeResult) {
+
+                    if (featureErr) {
+                        errors.push("Something went wrong while saving the venue type. All other data has been saved.");
+                        //TODO open render modify venue form instead, as all other information has been saved.
+                        renderEditVenue(req, res, errors);
+                        return;
+                    }
+
+                    notInserted--;
+
+                    if (notInserted == 0) {
+                        //We are finished executing: render page
+                        res.redirect('/venue/' + venueID);
+                    }
+                });
+            });
+        }
     }
 };
