@@ -6,14 +6,14 @@ module.exports = function (restobar) {
             values: [req.cookies.user]
         })
         .on('error', function(error){
-            res.render('profile', {title: 'My profile', userID: req.cookies.user, errors: ['An error occurred.'], fields: req.body});
+            res.render('edit_profile', {title: 'My profile', userID: req.cookies.user, errors: ['An error occurred.'], fields: req.body});
         })
         .on('end', function(result){
-            res.render('profile', {title: 'My profile', userID: req.cookies.user, fields: result.rows[0]});
+            res.render('edit_profile', {title: 'My profile', userID: req.cookies.user, fields: result.rows[0]});
         });
     }
 
-    restobar._app.get('/profile', function (req, res, next) {
+    restobar._app.get('/edit_profile', function (req, res, next) {
 
         if(!req.cookies.user){
             res.redirect('/login');
@@ -23,7 +23,7 @@ module.exports = function (restobar) {
         renderShowProfile(req, res);
     });
 
-    restobar._app.post('/profile', function (req, res, next) {
+    restobar._app.post('/edit_profile', function (req, res, next) {
 
         if(!req.cookies.user){
             res.redirect('/login');
@@ -89,7 +89,7 @@ module.exports = function (restobar) {
         }
 
         if(errors.length){
-            res.render('profile', {title: 'Profile', errors: errors, fields: req.body});
+            res.render('edit_profile', {title: 'Profile', errors: errors, fields: req.body});
             return;
         }
 
@@ -100,7 +100,7 @@ module.exports = function (restobar) {
         })
         .on('error', function(error) {
             console.log(error);
-            res.render('profile', {title: 'My profile', errors: errors, fields: req.body});
+            res.render('edit_profile', {title: 'My profile', errors: errors, fields: req.body});
         })
         .on('end', function(){
             renderShowProfile(req, res);

@@ -58,8 +58,8 @@ var RestobarApp = function () {
         var venueImage = require('./routes/venue_image.js');
         venueImage(this);
 
-        var profile = require('./routes/profile');
-        profile(this);
+        var edit_profile = require('./routes/edit_profile');
+        edit_profile(this);
 
         //Pages for visitors
         var login = require('./routes/login');

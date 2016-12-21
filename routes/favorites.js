@@ -27,4 +27,24 @@ module.exports = function (restobar) {
             }
         });
     });
-}
+
+    restobar._app.get('/favorites', function (req, res, next) {
+        var user_id = req.cookies.user;
+        if(!user_id) {
+            next(400);
+            return;
+        }
+        res.render('favorites', {title:'Favorites ', userID:user_id});
+    });
+
+    restobar._app.get('/favorites/json', function (req, res, next) {
+        var user_id = req.cookies.user;
+        restobar.client.query({text:'SELECT venue_id FROM user_favorites WHERE user_id=$1::int', values:[user_id]})
+            .on('error', function () {
+                // do nothing
+            })
+            .on('end', function (result) {
+                res.json(result.rows);
+            });
+    });
+};
