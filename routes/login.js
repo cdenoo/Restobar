@@ -12,6 +12,7 @@ module.exports = function (restobar) {
             return;
         }
 
+        // Load the login page.
         res.render('login', {title: 'Login', errors: errorMessages});
     }
 
