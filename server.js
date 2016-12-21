@@ -77,6 +77,9 @@ var RestobarApp = function () {
 
         var fav = require('./routes/favorites');
         fav(this);
+
+        var logout = require('./routes/logout');
+        logout(this);
     };
 
     this.initErrorHandling = function () {
@@ -105,7 +108,7 @@ var RestobarApp = function () {
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development' || true){
+        if(process.env.NODE_ENV === 'development'){
             console.warn(value);
         }
     };
@@ -116,7 +119,7 @@ var RestobarApp = function () {
         // connect to our database
         client.connect(function (err) {
             if (err) throw err;
-            console.warn("Connected to db");
+            app.devWarn("Connected to db");
         });
 
         this.client = client;
