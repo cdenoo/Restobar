@@ -97,6 +97,9 @@ block bodycontent
                     - starsLeft--;
                     i.fa.fa-star-o(aria-hidden='true')
 
+        div(style="text-align: center;")
+            img(src=venueData.image_url)
+
         h2 Details
 
         #details.row
@@ -165,7 +168,7 @@ block bodycontent
                         i.fa.fa-star(aria-hidden='true')
 
                     - var starsLeft = 5 - n;
-                    while starsLeft >= 1
+                    while starsLeft >= 0
                         - starsLeft--;
                         i.fa.fa-star-o(aria-hidden='true')
 
