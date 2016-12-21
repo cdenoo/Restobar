@@ -61,9 +61,6 @@ var RestobarApp = function () {
         var login = require('./routes/login');
         login(this);
 
-        var facebookCallback = require('./facebook_callback.js');
-
-
         this.auth = require('./routes/auth.js');
         this.auth(this);
 
@@ -133,6 +130,7 @@ var RestobarApp = function () {
                 console.log(accessToken);
                 console.log(profile);
 
+                var facebookCallback = require('./facebook_callback.js');
                 facebookCallback(this, accessToken, profile);
                 //this.auth.facebookCallback(this, accessToken, profile);
             }
