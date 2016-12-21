@@ -26,13 +26,18 @@ html
 						if userID > 0
 							li
 								a(href='/create-venue') Create a Venue
-							li
-								a(href='/profile') My profile
+							li.dropdown
+								a(class='dropdown-toggle' role='button' data-toggle='dropdown') My profile
+								ul.dropdown-menu
+									li
+										a(href='/favorites') Favorites
+									li
+										a(href='/edit_profile') Edit
 						else
 							li
 								a(href='/login') Login
 					if userID > 0
-						ul.nav.navbar-nav.navbar-right
+						ul(class='nav navbar-nav navbar-right')
 							li
 								a(href='/logout') Logout
 

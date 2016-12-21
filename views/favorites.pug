@@ -1,0 +1,32 @@
+extends basiclayout
+
+block bodycontent
+    .row.col-md-8.col-centered
+        h1 My Favorites
+        #favorites.col-sm-7.col-md-9
+
+    script.
+        $(function formatFavorites(){
+            var result='';
+            $.ajax({
+                url: 'favorites/json',
+                type: 'get',
+                datatype: 'json',
+                success: function (response) {
+                    for(o in response){
+                        $.ajax({
+                            url:'api/venues/' + response[o].venue_id,
+                            type: 'get',
+                            datatype: 'json',
+                            success: function (venueresponse) {
+                                var id = venueresponse.result[0].venue_id;
+                                var name = venueresponse.result[0].name;
+                                result += '<li> <a href="/venue/' + id + '">' + name + '</a> </li>';
+                            }
+                        }).then(function () {
+                            $('#favorites').html('<ul>' + result + '</ul>');
+                        });
+                    }
+                }
+            });
+        })
