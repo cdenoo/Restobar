@@ -9,17 +9,30 @@ block bodycontent
             div(class='panel panel-default')
                 div(class='panel-body')
                     div(class='panel-body-content')
+
+                        // If there is one or more errors, we show them on top.
                         if errors
                             each error in errors
                                 .error.bg-danger #{error}
+
                         h3 I have an account
+
+                        // This form asks the username and password of an existing user to login.
                         form(class='form-horizontal' method='POST')
+
                             div(class='form-group')
                                 input(id='username' class='form-control' type='text' placeholder='Username' name='username')
+
                             div(class='form-group')
                                 input(id='password' class='form-control' type='password' placeholder='Password' name='password')
+
                             button(type='submit' class='btn btn-default inactive') Log in
+
                     div(class='panel-body-content')
+
                         h3 I'm new here
+
                         p It takes only a few moments to register. <br> Press Sign Up and enjoy!
+
+                        // A button that leads to the registerpage.
                         a(class='btn btn-default inactive' href='/register') Register
