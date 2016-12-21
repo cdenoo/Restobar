@@ -78,7 +78,8 @@ block bodycontent
             span.name
                 | #{venueData.name}
 
-            unless venueData.noRating
+
+            unless venueData.rating_count = 0
                 - var n = 1;
                 - var limit = (parseFloat(venueData.rating) + 0.25);
                 //We round it a little bit so that 3.8 stars becomes 4

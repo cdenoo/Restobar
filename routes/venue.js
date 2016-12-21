@@ -41,10 +41,6 @@ module.exports = function (restobar) {
 
             venueData.rating = parseFloat(venueData.rating).toFixed(1); //We only return one digit of precision
 
-            if(!venueData.rating_count){
-                venueData.noRating = true;
-            }
-
             //Load the ratings
             restobar.client.query({
                 name: "select_venue_ratings",
