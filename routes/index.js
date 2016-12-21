@@ -52,7 +52,6 @@ module.exports = function (restobar) {
                 renderIndex(req, res, ['An error occurred. Please try again later.']);
             })
             .on('end', function(result) {
-                console.log(result);
                 loadRecentlyRated(req, res, result.rows);
             });
 
@@ -72,7 +71,6 @@ module.exports = function (restobar) {
             renderIndex(req, res, ['An error occurred. Please try again later.']);
         })
         .on('end', function(result) {
-            console.log(result);
 
             if(req.cookies.user){
                 //user is logged in: load favorites
@@ -100,7 +98,6 @@ module.exports = function (restobar) {
             renderIndex(req, res, ['An error occurred. Please try again later.']);
         })
         .on('end', function(result) {
-            console.log(result);
 
             renderIndex(req, res, null, recommendations, recentlyRated, result.rows);
 

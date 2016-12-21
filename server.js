@@ -80,6 +80,9 @@ var RestobarApp = function () {
 
         var logout = require('./routes/logout');
         logout(this);
+
+        var venuesAroundMe = require('./routes/venues_around_me');
+        venuesAroundMe(this);
     };
 
     this.initErrorHandling = function () {

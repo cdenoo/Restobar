@@ -42,7 +42,12 @@ function setMarkerPosition(marker, position){
 function watchCurrentPosition() {
     var positionTimer = navigator.geolocation.watchPosition(
         function (position) {
-            setMarkerPosition(posMarker, position);
+            if(marker){
+                setMarkerPosition(posMarker, position);
+            }
+            else{
+                createMarker(position.coords.latitude, position.coords.longitude, 'Current Location');
+            }
         }
     );
 }

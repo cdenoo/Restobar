@@ -2,6 +2,22 @@ extends basiclayout
 
 block headcontent
     link(rel="stylesheet", href="css/home.css")
+    include includes/google-maps.pug
+    script(src='/scripts/map.js')
+
+    style.
+        #googlemap {
+            height: 500px;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        #googlemap * {
+            overflow: visible;
+        }
+
 block headercontent
     //remove header
 block bodycontent
@@ -91,6 +107,8 @@ block bodycontent
 
         section#personalRecommendations.row
             #leftCol.col-md-6
+                #googlemap
+
                 #recentRatings
                     h3 Recent Ratings
 
@@ -113,3 +131,43 @@ block bodycontent
     script(src='/scripts/weather.js')
     script.
         $(".container-fluid:first-of-type").removeClass("container-fluid");
+
+        $(function () {
+            createMap(true);
+        });
+        $(function(){
+            navigator.geolocation.getCurrentPosition(getVenuesAroundMe);
+
+            function getVenuesAroundMe(location){
+                if (location) {
+                    $.get('/venues_around_me', {lat: location.coords.latitude, long: location.coords.longitude}, function(data){
+                        if(data[0] != "SUCCESS"){
+                            $("#googlemaps").css("display" , "none");
+                            console.log("Can't get info");
+                            return;
+                        }
+
+                        $("#recentRatings").css("display" , "none");
+
+                        for(idx in data[1]){
+
+                            //Go over locations
+                            var tempMarker = new google.maps.Marker({
+                                                map: map,
+                                                position: new google.maps.LatLng(
+                                                    data[1][idx].y_coordinate,
+                                                    data[1][idx].x_coordinate
+                                                ),
+                                                title: data[1][idx].name
+                                            });
+
+                            tempMarker.addListener('click', function() {
+                                console.log("clicked!!");
+                                window.location = "/venue/" + data[1][idx].venue_id;
+                            });
+                        }
+
+                    }, 'json');
+                }
+            }
+        });
