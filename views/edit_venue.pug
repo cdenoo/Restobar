@@ -58,7 +58,7 @@ block bodycontent
 
                         div(class='form-group')
                             label(for='feature') Feature:
-                            select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' required multiple)
+                            select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' multiple)
                                 each feature in possibleFeatures
                                     if feature.selected == true
                                         option(value=feature.feature_id selected) #{feature.name}
