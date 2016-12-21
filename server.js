@@ -121,7 +121,8 @@ var RestobarApp = function () {
     };
 
     this.initFacebookLogin = function(){
-        //passport.initialize();
+        passport.initialize();
+        passport.session();
         passport.serializeUser(function(user, done){
             done(null, user);
         })
