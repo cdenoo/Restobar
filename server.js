@@ -121,7 +121,7 @@ var RestobarApp = function () {
     };
 
     this.initFacebookLogin = function(){
-        app.use(passport.initialize());
+        app.passport.initialize();
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
                 clientSecret: "2b1497398b4ca050f8827165c51049c8",
