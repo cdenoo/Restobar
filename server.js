@@ -85,7 +85,7 @@ var RestobarApp = function () {
     this.initErrorHandling = function () {
         this._app.use(function (err, req, res, next) {
 
-            console.log(err);
+            //console.log(err);
 
             switch(err){
                 case 400:
@@ -101,14 +101,14 @@ var RestobarApp = function () {
                     res.render('errorpage', {title: 'Something bad happened!'});
                     break;
                 default:
-                    res.render('errorpage', {title: 'Unhandled error'});
+                    res.render('errorpage', {title: 'Unhandled error', error: err});
                     break;
             }
         });
     };
 
     this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development'){
+        if(process.env.NODE_ENV === 'development' || true){
             console.warn(value);
         }
     };
@@ -136,24 +136,28 @@ var RestobarApp = function () {
     };
 
     this.initFacebookLogin = function(){
+        passport.initialize();
+        passport.session();
+        passport.serializeUser(function(user, done){
+            done(null, user);
+        })
+        passport.deserializeUser(function(object, done){
+            done(null, object);
+        })
+
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
                 clientSecret: "2b1497398b4ca050f8827165c51049c8",
-                callbackURL: "https://wtrestobar.herokuapp.com/login"
+                callbackURL: "https://wtrestobar.herokuapp.com/auth/facebook/callback"
             },
             function(accessToken, refreshToken, profile, done) {
-                User.findOne({ username: username }, function(err, user) {
-                    if(err){
-                        return done(err);
-                    }
-                    if(!user){
-                        return done(null, false);
-                    }
-                    if(!user.validPassword(password)){
-                        return done(null, false);
-                    }
-                    return done(null, user);
-                });
+                console.log(accessToken);
+                console.log(profile);
+
+                var facebookCallback = require('./facebook_callback.js');
+                facebookCallback(app, accessToken, profile);
+                //this.auth.facebookCallback(this, accessToken, profile);
+                return done(null, 5);
             }
         ));
         this.passport = passport;
@@ -174,12 +178,12 @@ var RestobarApp = function () {
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
-        this.initFacebookLogin();
         this.initUpload();
         this.initViews();
+        this.initDB();
+        this.initFacebookLogin();
         this.initRoutes();
         this.initErrorHandling();
-        this.initDB();
         this.initGoogleMaps();
         this._app.listen(this._port);
 

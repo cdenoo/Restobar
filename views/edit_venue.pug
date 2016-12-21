@@ -60,6 +60,19 @@ block bodycontent
                             input(id='phoneNumber' class='form-control' type='text' placeholder='Phone Number' name='phoneNumber' value=fields.phone_number)
 
                         div(class='form-group')
+                            label(for='email') Email:
+                            input(id='email' class='form-control' type='email' placeholder='Email Address' name='email' value=fields.email)
+
+                        div(class='form-group')
+                            label(for='feature') Feature:
+                            select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' multiple)
+                                each feature in possibleFeatures
+                                    if feature.selected == true
+                                        option(value=feature.feature_id selected) #{feature.name}
+                                    else
+                                        option(value=feature.feature_id) #{feature.name}
+
+                        div(class='form-group')
                             label(for='openingHours') Opening Hours:
                             textarea(id='openingHours' class='form-control' name='openingHours') #{fields.opening_hours}
 

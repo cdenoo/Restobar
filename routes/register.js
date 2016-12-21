@@ -119,7 +119,7 @@ module.exports = function (restobar) {
 
         restobar.client.query({
             name: "add_user",
-            text: "INSERT INTO users(username, password, first_name, last_name, email, birthday, gender) " +
+            text: "INSERT INTO users(username, password, first_name, last_name, email, birthday, gender)" +
                   "values($1, $2, $3, $4, $5, $6, $7)",
             values: [username, password, firstName, lastName, email, birthdayDate.getMilliseconds(), gender]
         }, function(err, result) {
