@@ -2,13 +2,8 @@ module.exports = function (restobar) {
 
     restobar._app.get('/venues_around_me', function(req, res, next){
 
-        console.log(req.body);
-
-        var lat = parseFloat(req.query.lat); //Y
-        var long = parseFloat(req.query.long); //X
-
-        console.log(lat);
-        console.log(long);
+        var lat = parseFloat(req.query.lat); //Y-coordinate
+        var long = parseFloat(req.query.long); //X-coordinate
 
         restobar.client.query({
             name: "select_venues_around_me",

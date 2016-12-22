@@ -1,5 +1,14 @@
 module.exports = function (restobar) {
 
+    /**
+     * This function will render the search page.
+     * It won't be called to display the results.
+     * This function does not load any results.
+     * @param req
+     * @param res
+     * @param errorMessages An error of error messages to be shown on the screen.
+     * @param query The initial query that should be shown
+     */
     function renderSearch(req, res, errorMessages, query){
 
         restobar.client.query({
@@ -40,18 +49,18 @@ module.exports = function (restobar) {
 
     restobar._app.post('/search', function(req, res, next){
 
-        console.log(req.body);
-
         var query = req.body.query;
         var country = req.body.country;
         var city = req.body.city;
 
         if(query == "" && country == "" && city == "" &&  Object.keys(req.body).length == 3){
-            //No fields given: load initial result
+            //No fields given: load initial result: all venues
             returnAllVenues(res);
             return;
         }
 
+        //This is the basic query to get all information about the matching venues including their avarage rating and the number of ratings
+        //We will add criteria to this query further
         var sqlQuery = "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues WHERE ";
 
         if(query){
@@ -67,7 +76,6 @@ module.exports = function (restobar) {
         }
 
         //Go over the selected venue types
-        //TODO add button to set an or here instead of an and
         console.log(req.body.venue_type);
         for(index in req.body.venue_type){
             sqlQuery += "venue_id IN (SELECT venue_id FROM venue_types WHERE type_id=" + req.body.venue_type[index] + ") AND ";
@@ -79,7 +87,8 @@ module.exports = function (restobar) {
         }
 
         //Now make the clean query (it currently always ends with ... AND
-        var cleanQuery = sqlQuery.substring(0, sqlQuery.length - 5);
+        //We also show only the 50 first results to decrease traffic
+        var cleanQuery = sqlQuery.substring(0, sqlQuery.length - 5) + " LIMIT 50";
 
         //Execute the query
         restobar.client.query(cleanQuery) //We use this approach to make sure the query is always executed again
@@ -98,7 +107,7 @@ module.exports = function (restobar) {
     function returnAllVenues(res){
         restobar.client.query({
             name: "select_all_venues_alphabetically_with_rating",
-            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues ORDER BY name ASC"
+            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues ORDER BY name ASC LIMIT 300"
         })
         .on('error', function(error){
             console.log(error);

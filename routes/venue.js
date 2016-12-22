@@ -7,41 +7,45 @@ module.exports = function (restobar) {
         "November", "December"
     ];
 
+    /**
+     * Render the venue page
+     * @param req
+     * @param res
+     * @param errorMessages An array of error messages that should be shown to the user
+     */
     function renderVenue(req, res, errorMessages){
 
-        //Get venueID
+        //Get venue_id
         var urlPieces = req.originalUrl.split("/");
         var venueID = urlPieces[2];
 
         if(isNaN(venueID)){
             //The ID of the venue should be a number
-            //res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']})
+            //We redirect the user to the homepage if this is not the case
             res.redirect('/');
             return;
         }
 
+        //Get all data of this venue
         restobar.client.query({
             name: "select_venue",
             text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating_count FROM venues WHERE venue_id=$1",
             values: [venueID]
         })
         .on('error', function(error){
-            //TODO add errors to homepage
-            console.log("DB ERROR: " + error);
             res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
         })
         .on('end', function(result){
 
             if(!result.rows.length){
-                //No venue found with this ID: error
-                res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
+                res.redirect('/');
             }
 
             var venueData = result.rows[0];
 
             venueData.rating = parseFloat(venueData.rating).toFixed(1); //We only return one digit of precision
 
-            //Load the ratings
+            //Load the ratings (or reviews)
             restobar.client.query({
                 name: "select_venue_ratings",
                 text: "SELECT venue_ratings.*, users.* FROM venue_ratings LEFT JOIN users ON users.user_id=venue_ratings.user_id WHERE venue_id=$1",
@@ -56,22 +60,20 @@ module.exports = function (restobar) {
                 result.addRow(row);
             })
             .on('error', function(){
-                res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
+                res.redirect('/');
             })
             .on('end', function(reviewsResult){
+
+                //The last check: see if this venue is a favorite of the user
                 restobar.client.query({text:'SELECT * FROM user_favorites WHERE user_id=$1::int AND venue_id=$2::int', values: [req.cookies.user, venueID]})
                     .on('error', function (err) {
                         res.render('venue', {title: 'Restobar | ' + venueData.name, userID: req.cookies.user, venueData: venueData, fields: req.body, reviews: reviewsResult.rows, errors: errorMessages, favorite:false});
                     })
                     .on('end', function (result) {
 
-                        var favorite = false;
+                        var favorite = result.rows.length;
 
-                        if(result.rows.length){
-                            console.log("favourite found");
-                            favorite = true;
-                        }
-
+                        //We have all info: render the page
                         res.render('venue', {title: 'Restobar | ' + venueData.name, userID: req.cookies.user, venueData: venueData, fields: req.body, reviews: reviewsResult.rows, errors: errorMessages, favorite:favorite});
                     });
             });
@@ -84,13 +86,14 @@ module.exports = function (restobar) {
 
     restobar._app.post('/venue/[0-9]*/', function (req, res, next) {
 
+        //A POST request means that the review form has been submitted
+
         //Get venueID
         var urlPieces = req.originalUrl.split("/");
         var venueID = urlPieces[2];
 
         if(isNaN(venueID)){
             //The ID of the venue should be a number
-            //res.render('index', {title: 'Restobar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']})
             res.redirect('/');
             return;
         }
@@ -99,6 +102,7 @@ module.exports = function (restobar) {
         var comments = req.body.comments;
         var errors = [];
 
+        //Check if the required fields are filled in
         if(!rating || isNaN(rating)){
             errors.push("Please rate this venue.");
         }
@@ -112,6 +116,7 @@ module.exports = function (restobar) {
             return;
         }
 
+        //All fields are filled in: insert the data into the database
         restobar.client.query({
             name: "rate_venue",
             text: "INSERT INTO venue_ratings (venue_id, user_id, rating, comments, date) " +
@@ -121,12 +126,11 @@ module.exports = function (restobar) {
 
             if(err){
                 errors.push("Something went wrong. Please try again");
-                console.warn("Database error: " + err);
                 renderVenue(req, res, errors);
                 return
             }
 
-            //Everything went well
+            //Everything went well: render the page again
             renderVenue(req, res);
 
         });

@@ -20,14 +20,19 @@ module.exports = function (restobar) {
 
         restobar.client.query({
             name: "select_venue_for_edit",
-            text: "SELECT * FROM venues WHERE venue_id=$1",
-            values: [venueID] //The venue_id can be found in the URL.
+            text: "SELECT * FROM venues WHERE venue_id=$1 AND owner_id=$2",
+            values: [venueID, req.cookies.user] //The venue_id can be found in the URL.
         })
             .on('error', function(){
                 res.render('index', {title: 'RestoBar | ERROR', userID: req.cookies.user, errors: ['An error occurred. Please try again later.']});
             })
             .on('end', function(result){
-                //  console.log(result.rows[0]);
+
+                //We didn't find any results
+                if(!result.rows.length){
+                    res.redirect('/');
+                }
+
                 res.render('venue_image', {title: 'Edit Venue', userID: req.cookies.user, errors: errorMessages,  venueData: result.rows[0]});
             });
     }
@@ -44,18 +49,11 @@ module.exports = function (restobar) {
             res.redirect('/');
         }
 
-        //Error handling
-        /*restobar.upload(req, res, function(error){
-            if(error){
-                renderVenueImage(req, res, ['An error occurred. Please try again later.']);
-            }
-        });*/
-
-        //Insert into database
+        //Insert the url to the image into database
         restobar.client.query({
             name: "venue_add_image",
-            text: "UPDATE venues SET image_url=$1 WHERE venue_id=$2",
-            values: ['/uploads/' + req.file.filename, venueID]
+            text: "UPDATE venues SET image_url=$1 WHERE venue_id=$2 AND owner_id=$3",
+            values: ['/uploads/' + req.file.filename, venueID, req.cookies.user]
         }, function(err, result){
 
             if(err){
@@ -65,8 +63,7 @@ module.exports = function (restobar) {
                 return
             }
 
-            //Everything went well. Insert all the types now.
-            //insertVenueTypes(req, res, errors, result.oid);
+            //Everything went well. Render the page
             renderVenueImage(req, res);
         });
     });
