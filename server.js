@@ -15,6 +15,14 @@ var RestobarApp = function () {
     this.user_male = 1;
     this.user_female = 2;
 
+    // Function for debugging purposes, only prints to the console if environment variable NODE_ENV is set to development
+    this.devWarn = function (value) {
+        if(process.env.NODE_ENV === 'development'){
+            console.warn(value);
+        }
+    };
+
+    // Initialise all variables that are needed for our application
     this.initVariables = function () {
         this._port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
         this._app = express();
@@ -26,15 +34,18 @@ var RestobarApp = function () {
         this._app.use(favicon('public/images/favicon.ico'));
     };
 
+    // Initialise the public directory with scripts and css
     this.initPublicDir = function () {
         this._app.use(express.static('public'));
     };
 
+    // Initialise the views directory and set the view handler to pug
     this.initViews = function () {
         this._app.set('views', 'views');
         this._app.set('view engine', 'pug');
     };
 
+    // Initialise the routes
     this.initRoutes = function () {
         var index = require('./routes/index');
         index(this);
@@ -45,7 +56,6 @@ var RestobarApp = function () {
         var search = require('./routes/search');
         search(this);
 
-        //Pages for registered users
         var createVenue = require('./routes/create_venue.js');
         createVenue(this);
 
@@ -61,14 +71,12 @@ var RestobarApp = function () {
         var edit_profile = require('./routes/edit_profile');
         edit_profile(this);
 
-        //Pages for visitors
         var login = require('./routes/login');
         login(this);
 
         var auth = require('./routes/auth.js');
         auth(this);
 
-        //Pages for test
         var map = require('./routes/map');
         map(this);
 
@@ -85,11 +93,9 @@ var RestobarApp = function () {
         venuesAroundMe(this);
     };
 
+    // Initialise error handling
     this.initErrorHandling = function () {
         this._app.use(function (err, req, res, next) {
-
-            //console.log(err);
-
             switch(err){
                 case 400:
                     res.status(400);
@@ -110,26 +116,21 @@ var RestobarApp = function () {
         });
     };
 
-    this.devWarn = function (value) {
-        if(process.env.NODE_ENV === 'development' || true){
-            console.warn(value);
-        }
-    };
-
+    // Initialise the database
     this.initDB = function(){
+        // Create a client for our database
         var client = new pg.Client("postgres://qqfcgtgxjvjzds:t-LPRK0FYf03F6P75xNjRGYpCz@ec2-54-247-119-245.eu-west-1.compute.amazonaws.com:5432/d6gkp8aja1iue6?ssl=true");
 
-        // connect to our database
+        // Connect to the database
         client.connect(function (err) {
             if (err) throw err;
             app.devWarn("Connected to db");
         });
 
         this.client = client;
-
-        this.client.query({text: 'CREATE TABLE IF NOT EXISTS favorites (user_id integer NOT NULL, venue_id integer NOT NULL, fav boolean NOT NULL)'});
     };
 
+    // Initialise the client for google maps
     this.initGoogleMaps = function(){
 
         this.googleMapsClient = googleMaps.createClient({
@@ -143,10 +144,10 @@ var RestobarApp = function () {
         passport.session();
         passport.serializeUser(function(user, done){
             done(null, user);
-        })
+        });
         passport.deserializeUser(function(object, done){
             done(null, object);
-        })
+        });
 
         passport.use(new FacebookStrategy({
                 clientID: "622890094588906",
@@ -173,11 +174,12 @@ var RestobarApp = function () {
             filename: function (req, file, cb){
                 cb(null, req.cookies.user + Date.now() + file.originalname);
             }
-        })
+        });
 
         this.upload = multer({storage: storage});
-    }
+    };
 
+    // Initialise the server by calling all other initialisations
     this.initServer = function () {
         this.initVariables();
         this.initPublicDir();
@@ -188,6 +190,7 @@ var RestobarApp = function () {
         this.initRoutes();
         this.initErrorHandling();
         this.initGoogleMaps();
+        // Make the application listen to the defined port
         this._app.listen(this._port);
 
         this.devWarn('Server started on http://127.0.0.1:8080/');
