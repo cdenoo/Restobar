@@ -52,7 +52,7 @@ module.exports = function (restobar) {
                     restobar.client.query({
                         name: "select_venue_feature_ids",
                         text: "SELECT feature_id FROM venue_features WHERE venue_id=$1",
-                        values: [thisVenueID] //The venue_id can be found in the URL.
+                        values: [thisVenueID] // The venue_id can be found in the URL.
                     })
                         .on("row", function(row){
                             marked_feature_ids.push(row.feature_id);
@@ -78,11 +78,11 @@ module.exports = function (restobar) {
                                     // All possible feature types can be found in featuresResult.rows, so we store this in our variable.
                                     possibleFeatures = featuresResult.rows;
 
-                                    //The last query selects all the other information about the venue to be edited.
+                                    // The last query selects all the other information about the venue to be edited.
                                     restobar.client.query({
                                         name: "select_venue_for_edit",
                                         text: "SELECT * FROM venues WHERE venue_id=$1",
-                                        values: [thisVenueID] //The venue_id can be found in the URL.
+                                        values: [thisVenueID] // The venue_id can be found in the URL.
                                     })
                                         .on('error', function(){
                                             res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
