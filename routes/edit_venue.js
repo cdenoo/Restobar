@@ -35,9 +35,11 @@ module.exports = function (restobar) {
                     text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
                 })
                 .on("row", function(row, venueTypesResult){
-                    if(row.type_id in marked_type_ids){
+
+                    if(marked_type_ids.indexOf(row.type_id) >= 0){
                         row.selected = true;
                     }
+
                     venueTypesResult.addRow(row);
                 })
                 .on("error", function(){
@@ -65,7 +67,7 @@ module.exports = function (restobar) {
                                 text: "SELECT * FROM features ORDER BY name ASC"
                             })
                                 .on('row', function(row, featuresResult){
-                                    if(row.feature_id in marked_feature_ids){
+                                    if(marked_feature_ids.indexOf(row.feature_id) >= 0){
                                         row.selected = true;
                                     }
                                     featuresResult.addRow(row);
@@ -268,13 +270,13 @@ module.exports = function (restobar) {
             // An array which stores all the features of the venue.
             var featureArray = [];
 
-            // If a venue has only one feature, 'req.body.f' is not an array but just the feature id as a string.
-            if (!Array.isArray(req.body.type)) {
-                featureArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
+            // If a venue has only one feature, 'req.body.feature' is not an array but just the feature id as a string.
+            if (!Array.isArray(req.body.feature)) {
+                featureArray.push(Number(req.body.feature)); // A form sends all information as a string, now we convert it to an int.
             }
             else {
                 // 'req.body.type' is an array, so we can simply store it in our variable.
-                featureArray = req.body.type;
+                featureArray = req.body.feature;
             }
 
             // A variable that works as a counter that says how many elements are left to be inserted.
@@ -289,7 +291,7 @@ module.exports = function (restobar) {
                 }, function (featureErr, typeResult) {
 
                     if (featureErr) {
-                        errors.push("Something went wrong while saving the venue type. All other data has been saved.");
+                        errors.push("Something went wrong while saving the venue features. All other data has been saved.");
                         renderEditVenue(req, res, errors);
                         return;
                     }

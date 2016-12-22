@@ -31,7 +31,7 @@ function setMapCenter(latitude, longitude){
 }
 
 function setMarkerPosition(marker, position){
-    marker.setPosition(
+    posMarker.setPosition(
         new google.maps.LatLng(
             position.coords.latitude,
             position.coords.longitude
@@ -42,7 +42,7 @@ function setMarkerPosition(marker, position){
 function watchCurrentPosition() {
     var positionTimer = navigator.geolocation.watchPosition(
         function (position) {
-            if(marker){
+            if(posMarker){
                 setMarkerPosition(posMarker, position);
             }
             else{

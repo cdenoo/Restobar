@@ -72,9 +72,9 @@ block bodycontent
 
             form#search.row(method="post" name="search" action="#")
                 .input-group.input-group-lg
-                    input(type="text" name="search" class="form-control" placeholder="Search a venue")
+                    input(type="text" name="search" id="searchQuery" class="form-control" placeholder="Search a venue")
                     span.input-group-btn
-                        button.btn.btn-default(type="button")
+                        button.btn.btn-default(type="button" onclick="window.location = '/search/' + $('#searchQuery').val();")
                             | Search!
 
     .container-fluid
