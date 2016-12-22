@@ -268,7 +268,7 @@ module.exports = function (restobar) {
             // An array which stores all the features of the venue.
             var featureArray = [];
 
-            // If a venue has only one feature, 'req.body.type' is not an array but just the feature id as a string.
+            // If a venue has only one feature, 'req.body.f' is not an array but just the feature id as a string.
             if (!Array.isArray(req.body.type)) {
                 featureArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
             }

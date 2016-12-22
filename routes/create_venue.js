@@ -3,7 +3,9 @@ module.exports = function (restobar) {
     function renderCreateVenue(req, res, errorMessages){
 
         if(!req.cookies.user){
-            //We will render the login page if the user is not logged in
+            // We will render the login page if the user is not logged in.
+            // This is because it is not possible to create a venue when you are not logged in.
+            // The owner_id of the venue is linked to the user_id of the user, so users have to be logged in to create venues.
             var errors = ["You need to be logged in to view this page"];
             res.render('login', {title: 'login', errors: errors});
         }
@@ -16,9 +18,9 @@ module.exports = function (restobar) {
         })
         .on('row', function(row, resultTypes){
 
-            //Check if the current row needs to be selected
+            // Check if the current row needs to be selected.
             if(req.body.type && req.body.type.indexOf(row.type_id + '') >= 0){
-                //Element is should be selected: add an extra field in the row
+                // Element is should be selected: add an extra field in the row.
                 row.selected =  'selected';
             }
 
@@ -35,12 +37,11 @@ module.exports = function (restobar) {
             })
                 .on('row', function(row, resultFeatures){
 
-                    //Check if the current row needs to be selected
+                    // Check if the current row needs to be selected.
                     if(req.body.name && req.body.name.indexOf(row.feature_id + '') >= 0){
-                        //Element is should be selected: add an extra field in the row
+                        // Element is should be selected: add an extra field in the row.
                         row.selected =  'selected';
                     }
-
                     resultFeatures.addRow(row);
                 })
                 .on('error', function(){
@@ -58,6 +59,7 @@ module.exports = function (restobar) {
 
     restobar._app.post('/create-venue', function (req, res, next) {
 
+        // Some variables to check the input.
         var name = req.body.name;
         var street = req.body.street;
         var houseNumber = req.body.houseNumber;
@@ -69,6 +71,8 @@ module.exports = function (restobar) {
         var openingHours = req.body.openingHours;
         var errors = [];
 
+        // Some checks whether every field is filled in correctly.
+        // If not, an error is added to the variable 'errors'.
         if(!name){
             errors.push("Please enter a name for the venue.");
         }
@@ -93,12 +97,13 @@ module.exports = function (restobar) {
             errors.push("Please enter a country.");
         }
 
+        // If there is one or more errors, the create_venue page is loaded with the errors on top of it.
         if(errors.length){
             renderCreateVenue(req, res, errors);
             return;
         }
 
-        //Get the coordinates of google
+        // Get the coordinates of google
         restobar.googleMapsClient.geocode({
             address: street + ' ' + houseNumber + ', ' + postalCode + ' ' +  city + ', ' + country
         }, function(err, response) {
@@ -138,8 +143,8 @@ module.exports = function (restobar) {
 
                 var venueID = result.rows[0].venue_id;
 
-                //Start with inserting the features
-                //After the features are inserted, the venue types will be inserted as well.
+                // Start with inserting the features.
+                // After the features are inserted, the venue types will be inserted as well.
                 insertFeatures(req, res, errors, venueID);
             });
         });
@@ -147,20 +152,23 @@ module.exports = function (restobar) {
 
     function insertFeatures(req, res, errors, venueID) {
 
+        // An array which stores all the features of the venue.
         var featureArray = [];
 
-        console.log(req.body.type);
-        console.log(Array.isArray(req.body.type));
+        // If a venue has only one type, 'req.body.type' is not an array but just the venuetype id as a string.
         if (!Array.isArray(req.body.type)) {
-            featureArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+            // 'req.body.type' is not an array, so we push the element in our variable.
+            featureArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
         }
         else {
+            // 'req.body.type' is an array, so we can simply store it in our variable.
             featureArray = req.body.type;
         }
 
+        // A variable that works as a counter that says how many elements are left to be inserted.
         var notInserted = featureArray.length;
 
-        //Insert each feature of venue
+        // Insert each feature of venue.
         featureArray.forEach(function(feature){
             restobar.client.query({
                 name: "link_venue_and_features",
@@ -170,15 +178,15 @@ module.exports = function (restobar) {
 
                 if (featureErr) {
                     errors.push("Something went wrong while saving the venue type. All other data has been saved.");
-                    //TODO open render modify venue form instead, as all other information has been saved.
                     renderCreateVenue(req, res, errors);
                     return
                 }
 
+                // One type is inserted, so we decrement our counter.
                 notInserted--;
 
                 if(notInserted == 0) {
-                    //Everything is still ok: insert venue types.
+                    // Everything is still ok: insert venue types.
                     insertVenueTypes(req, res, errors, venueID);
                 }
 
@@ -188,15 +196,20 @@ module.exports = function (restobar) {
 
     function insertVenueTypes(req, res, errors, venueID){
 
+        // An array which stores all the types of the venue.
         var typeArray = [];
 
+        // If a venue has only one type, 'req.body.type' is not an array but just the venuetype id as a string.
         if(!Array.isArray(req.body.type)){
-            typeArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+            // 'req.body.type' is not an array, so we push the element in our variable.
+            typeArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
         }
         else{
+            // 'req.body.type' is an array, so we can simply store it in our variable.
             typeArray = req.body.type;
         }
 
+        // A variable that works as a counter that says how many elements are left to be inserted.
         var notInserted = typeArray.length;
 
         //Insert each type of venue
@@ -209,15 +222,15 @@ module.exports = function (restobar) {
 
                 if(typeErr){
                     errors.push("Something went wrong while saving the venue type. All other data has been saved.");
-                    //TODO open render modify venue form instead, as all other information has been saved.
                     renderCreateVenue(req, res, errors);
                     return
                 }
 
+                // One type is inserted, so we decrement our counter.
                 notInserted--;
 
                 if(notInserted == 0) {
-                    //Everything went ok: render the venue page
+                    // Everything went ok: render the venue page
                     res.redirect('venue/' + venueID);
                 }
 

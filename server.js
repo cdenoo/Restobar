@@ -6,7 +6,6 @@ var pg = require('pg');
 var cookieParser = require('cookie-parser');
 var googleMaps = require('@google/maps');
 var forecast = require('forecast');
-var passport = require('passport'), FacebookStrategy = require('passport-facebook').Strategy;
 var multer = require('multer');
 
 var RestobarApp = function () {
@@ -74,9 +73,6 @@ var RestobarApp = function () {
         var login = require('./routes/login');
         login(this);
 
-        var auth = require('./routes/auth.js');
-        auth(this);
-
         var map = require('./routes/map');
         map(this);
 
@@ -139,34 +135,6 @@ var RestobarApp = function () {
 
     };
 
-    this.initFacebookLogin = function(){
-        passport.initialize();
-        passport.session();
-        passport.serializeUser(function(user, done){
-            done(null, user);
-        });
-        passport.deserializeUser(function(object, done){
-            done(null, object);
-        });
-
-        passport.use(new FacebookStrategy({
-                clientID: "622890094588906",
-                clientSecret: "2b1497398b4ca050f8827165c51049c8",
-                callbackURL: "https://wtrestobar.herokuapp.com/auth/facebook/callback"
-            },
-            function(accessToken, refreshToken, profile, done) {
-                console.log(accessToken);
-                console.log(profile);
-
-                var facebookCallback = require('./facebook_callback.js');
-                facebookCallback(app, accessToken, profile);
-                //this.auth.facebookCallback(this, accessToken, profile);
-                return done(null, 5);
-            }
-        ));
-        this.passport = passport;
-    };
-
     this.initUpload = function(){
 
         var storage = multer.diskStorage({
@@ -186,7 +154,6 @@ var RestobarApp = function () {
         this.initUpload();
         this.initViews();
         this.initDB();
-        this.initFacebookLogin();
         this.initRoutes();
         this.initErrorHandling();
         this.initGoogleMaps();

@@ -13,15 +13,19 @@ block bodycontent
             div(class='panel panel-default')
                 div(class='panel-body')
 
+                    // If there is one or more errors, we show them on top.
                     if errors
                         each error in errors
                             .error.bg-danger #{error}
 
+                    // This form must be filled in to retrieve the information about the new venue.
                     form(class='registerForm' method='POST')
 
                         div(class='form-group')
                             label(for='type') * Type:
                             select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
+                                // If something goes wrong it is possible we come back to the same page but with the already entered data filled in.
+                                // Each type of the possibleVenueTypes that is one of the types of the venue will be selected on the create venue page.
                                 each type in possibleVenueTypes
                                     if type.selected === "selected"
                                         option(value=type.type_id selected) #{type.type_name}
@@ -63,6 +67,8 @@ block bodycontent
                         div(class='form-group')
                             label(for='feature') Features:
                             select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' multiple)
+                                // If something goes wrong it is possible we come back to the same page but with the already entered data filled in.
+                                // Each feature of the possibleFeatures that is one of the features of the venue will be selected on the create venue page.
                                 each feature in possibleFeatures
                                     if feature.selected === "selected"
                                         option(value=feature.feature_id selected) #{feature.name}
@@ -72,20 +78,6 @@ block bodycontent
                         div(class='form-group')
                             label(for='openingHours') Opening Hours:
                             textarea(id='openingHours' class='form-control' name='openingHours') #{fields.opening_hours}
-
-                        //TODO add facebook and twitter urls
-                        //div(class='form-group')
-                        //    label(for='facebookUrl') * Facebook URL:
-                        //    input(id='facebookUrl' class='form-control' type='url' placeholder='Facebook URL' name='cofacebookUrluntry')
-
-                        //div(class='form-group')
-                        //    label(for='twitterUrl') * Twitter URL:
-                        //    input(id='twitterUrl' class='form-control' type='url' placeholder='Twitter URL' name='twitterUrl')
-
-                        //TODO add email
-                        //div(class='form-group')
-                        //    label(for='email') * Email:
-                        //    input(id='email' class='form-control' type='email' placeholder='Email address' name='email' /*required*/)
 
                         div
                             button(class='btn btn-default' type='submit') Add Venue
