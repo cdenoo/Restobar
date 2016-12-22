@@ -28,6 +28,7 @@ block bodycontent
                         div(class='form-group')
                             label(for='type') Type:
                             select(id='type' class='form-control' type='text' placeholder='Type' name='type' required multiple)
+                                // Each type of the possibleVenueTypes that is one of the types of the venue will be selected on the edit page.
                                 each type in possibleVenueTypes
                                     if type.selected
                                         option(value=type.type_id selected) #{type.type_name}
@@ -69,8 +70,9 @@ block bodycontent
                         div(class='form-group')
                             label(for='feature') Feature:
                             select(id='feature' class='form-control' type='text' placeholder='Feature' name='feature' multiple)
+                                // Each feature of the possibleFeatures that is one of the features of the venue will be selected on the edit page.
                                 each feature in possibleFeatures
-                                    if feature.selected == true
+                                    if feature.selected
                                         option(value=feature.feature_id selected) #{feature.name}
                                     else
                                         option(value=feature.feature_id) #{feature.name}

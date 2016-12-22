@@ -7,7 +7,7 @@ module.exports = function (restobar) {
         if(!req.cookies.user){
             //We will render the login page if the user is not logged in.
             var errors = ["You need to be logged in to view this page"];
-            res.render('login', {title: 'login', errors: errors});
+            res.redirect('/login');
         }
 
         // The venueID is visible in the URL. We need this now and then.
@@ -18,7 +18,7 @@ module.exports = function (restobar) {
         var possibleFeatures;
         var marked_feature_ids = [];
 
-        //The first query selects all the venuetype ids of the venue we will edit.
+        // The first query selects all the venuetype ids of the venue we will edit.
         restobar.client.query({
             name: "select_venue_type_ids",
             text: "SELECT type_id FROM venue_types WHERE venue_id=$1",
@@ -29,7 +29,7 @@ module.exports = function (restobar) {
         })
             .on("end", function(){
 
-                //The second query makes sure that the selected types will be marked as selected.
+                // The second query makes sure that the selected types will be marked as selected.
                 restobar.client.query({
                     name: "select_possible_venue_types_for_edit",
                     text: "SELECT * FROM possible_venue_types ORDER BY type_name ASC"
@@ -44,9 +44,11 @@ module.exports = function (restobar) {
                     res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                 })
                 .on("end", function(venueTypesResult){
+
+                    // All possible venue types can be found in venueTypesResult.rows, so we store this in our variable.
                     possibleVenueTypes = venueTypesResult.rows;
 
-                    //The third query selects all feature ids of the venue that will be edited.
+                    // The third query selects all feature ids of the venue that will be edited.
                     restobar.client.query({
                         name: "select_venue_feature_ids",
                         text: "SELECT feature_id FROM venue_features WHERE venue_id=$1",
@@ -57,7 +59,7 @@ module.exports = function (restobar) {
                         })
                         .on("end", function(){
 
-                            //The fourth query makes sure that the selected features will be marked as selected.
+                            // The fourth query makes sure that the selected features will be marked as selected.
                             restobar.client.query({
                                 name: "select_possible_venue_features_for_edit",
                                 text: "SELECT * FROM features ORDER BY name ASC"
@@ -72,6 +74,8 @@ module.exports = function (restobar) {
                                     res.render('edit_venue', {title: 'Edit Venue', userID: req.cookies.user, errors: ['An error occurred. Please try again later.'], fields: req.body});
                                 })
                                 .on('end', function(featuresResult){
+
+                                    // All possible feature types can be found in featuresResult.rows, so we store this in our variable.
                                     possibleFeatures = featuresResult.rows;
 
                                     //The last query selects all the other information about the venue to be edited.
@@ -144,7 +148,7 @@ module.exports = function (restobar) {
             return;
         }
 
-        //Get the coordinates from Google.
+        // Get the coordinates from Google.
         restobar.googleMapsClient.geocode({
             address: street + ' ' + houseNumber + ', ' + postalCode + ' ' +  city + ', ' + country
         }, function(err, response) {
@@ -205,15 +209,20 @@ module.exports = function (restobar) {
     // Then we insert the new venue types.
     function insertVenueTypes(req, res, errors, venueID){
 
+        // An array which stores all the types of the venue.
         var typeArray = [];
 
+        // If a venue has only one type, 'req.body.type' is not an array but just the venuetype id as a string.
         if(!Array.isArray(req.body.type)){
-            typeArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+            // 'req.body.type' is not an array, so we push the element in our variable.
+            typeArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
         }
         else{
+            // 'req.body.type' is an array, so we can simply store it in our variable.
             typeArray = req.body.type;
         }
 
+        // A variable that works as a counter that says how many elements are left to be inserted.
         var notInserted = typeArray.length;
 
         // Insert each type of venue, one after the other.
@@ -230,10 +239,11 @@ module.exports = function (restobar) {
                     return;
                 }
 
+                // One type is inserted, so we decrement our counter.
                 notInserted--;
 
                 if(notInserted == 0){
-                    //We are finished with the venue types, we continue with the venue features.
+                    // We are finished with the venue types, we continue with the venue features.
                     deleteOldFeatures(req, res, errors, venueID)
                 }
             });
@@ -255,18 +265,22 @@ module.exports = function (restobar) {
         // Then we insert the new venue features.
         function insertVenueFeatures(req, res, errors, venueID) {
 
+            // An array which stores all the features of the venue.
             var featureArray = [];
 
+            // If a venue has only one feature, 'req.body.type' is not an array but just the feature id as a string.
             if (!Array.isArray(req.body.type)) {
-                featureArray.push(Number(req.body.type)); //A form sends all information as a string, now we convert it to an int.
+                featureArray.push(Number(req.body.type)); // A form sends all information as a string, now we convert it to an int.
             }
             else {
+                // 'req.body.type' is an array, so we can simply store it in our variable.
                 featureArray = req.body.type;
             }
 
+            // A variable that works as a counter that says how many elements are left to be inserted.
             var notInserted = featureArray.length;
 
-            //Insert each feature of venue
+            //Insert each feature of venue.
             featureArray.forEach(function (feature) {
                 restobar.client.query({
                     name: "link_venue_and_feature",
@@ -280,10 +294,11 @@ module.exports = function (restobar) {
                         return;
                     }
 
+                    // One feature is inserted, so we decrement our counter.
                     notInserted--;
 
                     if (notInserted == 0) {
-                        //We are finished executing: render page.
+                        // We are finished executing: render page.
                         res.redirect('/venue/' + venueID);
                     }
                 });
