@@ -73,9 +73,6 @@ var RestobarApp = function () {
         var login = require('./routes/login');
         login(this);
 
-        var map = require('./routes/map');
-        map(this);
-
         var api = require('./routes/api');
         api(this);
 
