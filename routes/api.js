@@ -3,10 +3,12 @@ module.exports = function (restobar) {
     var router = express.Router();
     restobar._app.use('/api',router);
 
+    // Returns a JSON object {success:false} to 'res'
     function jsonFail(res){
         res.json({success: false});
     }
 
+    // To prevent code redundancy, this function queries the database and returns a JSON object to 'res'
     function objectResultQuery(query, res, next) {
         if(!restobar.client){
             next(400); //TODO Database error
@@ -25,6 +27,7 @@ module.exports = function (restobar) {
             });
     }
 
+    // To prevent code redundancy, this function queries the database and returns a single line of JSON to 'res'
     function singleResultQuery(query, res, next){
         if(!restobar.client){
             next(400);
@@ -43,8 +46,9 @@ module.exports = function (restobar) {
         });
     }
 
+    // Checks if there is a user authenticated or not
     function loginCheck(req, res, func) {
-        var auth = true; //TODO change to authorisation
+        var auth = true; //TODO add real authentication
         if(auth){
             func();
         }else{
@@ -62,38 +66,6 @@ module.exports = function (restobar) {
         })
     });
 
-    /*************/
-    /* Users API */
-    /*************/
-
-    // GET all users
-    router.get('/users', function (req, res, next) {
-        loginCheck(req, res, function () {
-            objectResultQuery(
-                {
-                    name: 'select_all',
-                    text: 'SELECT first_name, last_name FROM users'
-                },
-                res,
-                next);
-        });
-    });
-
-    // GET user by id
-    router.get('/users/:id', function (req, res, next) {
-        loginCheck(req, res, function () {
-            var user_id = req.params.id;
-            singleResultQuery(
-                {
-                    name: 'select_user',
-                    text: 'SELECT * FROM users WHERE user_id=$1',
-                    values: [user_id]
-                },
-                res,
-                next);
-        });
-    });
-
     /**************/
     /* Venues API */
     /**************/
@@ -103,7 +75,7 @@ module.exports = function (restobar) {
         loginCheck(req, res, function () {
             objectResultQuery(
                 {
-                    text: 'SELECT * FROM venues'
+                    text: 'SELECT venues.venue_id, venues.name, venues.street, venues.house_number, venues.postal_code, venues.country, venues.phone_number, venues.opening_hours, users.first_name AS owner_first_name, users.last_name AS owner_last_name FROM venues INNER JOIN users ON venues.owner_id=users.user_id'
                 },
                 res,
                 next);
@@ -116,7 +88,7 @@ module.exports = function (restobar) {
             var venue_id = req.params.id;
             objectResultQuery(
                 {
-                    text: 'SELECT * FROM venues WHERE venue_id=$1::int',
+                    text: 'SELECT venues.venue_id, venues.name, venues.street, venues.house_number, venues.postal_code, venues.country, venues.phone_number, venues.opening_hours, users.first_name AS owner_first_name, users.last_name AS owner_last_name FROM venues INNER JOIN users ON venues.owner_id=users.user_id WHERE venue_id=$1::int',
                     values: [venue_id]
                 },
                 res,
