@@ -109,7 +109,7 @@ block bodycontent
             #leftCol.col-md-6
                 #googlemap
 
-                #recentRatings
+                #recentRatings(style="display: none;")
                     h3 Recent Ratings
 
                     each val in recentlyRated
@@ -141,14 +141,21 @@ block bodycontent
             createMap(true);
         });
         $(function(){
-            navigator.geolocation.getCurrentPosition(getVenuesAroundMe);
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getVenuesAroundMe);
+            }
+            else{
+                //No location available: don't show a map
+                $("#googlemap").css("display" , "none");
+                $("#recentRatings").css("display" , "block");
+            }
 
             function getVenuesAroundMe(location){
                 if (location) {
                     $.get('/venues_around_me', {lat: location.coords.latitude, long: location.coords.longitude}, function(data){
-                        if(data[0] != "SUCCESS"){
-                            $("#googlemaps").css("display" , "none");
-                            console.log("Can't get info");
+                        if(data[0] != "SUCCESS" || true){
+                            $("#googlemap").css("display" , "none");
+                            $("#recentRatings").css("display", "block");
                             return;
                         }
 
@@ -167,12 +174,16 @@ block bodycontent
                                             });
 
                             tempMarker.addListener('click', function() {
-                                console.log("clicked!!");
                                 window.location = "/venue/" + data[1][idx].venue_id;
                             });
                         }
 
                     }, 'json');
+                }
+                else{
+                    //We didn't receive a location: don't show the map
+                    $("#googlemap").css("display" , "none");
+                    $("#recentRatings").css("display", "block");
                 }
             }
         });
