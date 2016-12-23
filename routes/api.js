@@ -1,6 +1,7 @@
 module.exports = function (restobar) {
     var express = require('express');
     var router = express.Router();
+    var auth = require('basic-auth');
     restobar._app.use('/api',router);
 
     // Returns a JSON object {success:false} to 'res'
@@ -59,15 +60,34 @@ module.exports = function (restobar) {
     }
 
     // Checks if there is a user authenticated or not
-    // Would be helpful for say user-specific external data access
-    // NOT IMPLEMENTED, THIS IS A PLACEHOLDER
-    function loginCheck(req, res, func) {
-        var auth = true; //TODO add real authentication
-        if(auth){
-            func();
-        }else{
+    // This should be limited to a few tries, otherwise it is a possible exploit to find out passwords
+    function authCheck(req, res, func) {
+        var user = auth(req);
+
+        // If the request doesn't contain credentials, deny api call
+        if(!user){
             jsonFail(res);
+            return;
         }
+
+        // Query the database to compare user credentials
+        restobar.client.query({
+            text: 'SELECT password FROM users WHERE username=$1::varchar',
+            values: [user.name]
+        })
+            .on('error', function () {
+                // If there is a authentication error, return result = false
+                jsonFail(res);
+            })
+            .on('end', function (result) {
+                // If the result is empty or the passwords don't match, let the api call fail
+                if((result.rows.length == 0) || (user.pass != result.rows[0].password)){
+                    jsonFail(res);
+                    return;
+                }
+                // If the user and password are allowed access, execute the function
+                func();
+            });
     }
 
     /************/
@@ -75,7 +95,7 @@ module.exports = function (restobar) {
     /************/
 
     router.get('/', function (req, res, next) {
-        loginCheck(req, res, function () {
+        authCheck(req, res, function () {
             res.render('api', {title: 'API Reference'});
         })
     });
@@ -88,7 +108,7 @@ module.exports = function (restobar) {
     router.get('/venues', function (req, res, next) {
         // Check whether the user is authenticated
         // To check and regulate how many api-calls are handled from a source (not implemented)
-        loginCheck(req, res, function () {
+        authCheck(req, res, function () {
             // Search the database for venue data and return it
             // Join the venues and users tables on the venues' owners' identifiers to return the owners' names instead of id
             objectResultQuery(
@@ -102,7 +122,7 @@ module.exports = function (restobar) {
 
     // GET venue by id
     router.get('/venues/:id', function (req, res, next) {
-        loginCheck(req, res, function () {
+        authCheck(req, res, function () {
             // The venue's identifier is retrieved from the request header
             var venue_id = req.params.id;
             // Search the database for a specific venue's data and return it
