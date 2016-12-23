@@ -178,4 +178,17 @@ module.exports = function (restobar) {
             res.json({success: true});
         });
     });
+
+    /***********/
+    /* Ratings */
+    /***********/
+
+    // GET all the ratings of a venue specified by it's identifier
+    router.get('/ratings/:venueid', function (req, res, next){
+        var venue_id = req.params.venueid;
+        objectResultQuery({
+            text: 'SELECT * FROM venue_ratings WHERE venue_id=$1::int',
+            values: [venue_id]
+        }, res, next);
+    });
 };
