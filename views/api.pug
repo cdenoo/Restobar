@@ -9,27 +9,6 @@ block bodycontent
                 .panel-body-content
                     .panel.panel-default
                         .panel-heading
-                            button(class='btn-block' data-toggle='collapse' data-target='#users') Users
-                        .panel-body.collapse(id='users')
-                            h2(style='text-align: left')
-                                a(href='/api/users') /users/
-                            p(style='text-align: left') Returns all users' data.
-
-                            h2(style='text-align: left')='/users/<user_id>/'
-                            table.table.table-bordered
-                                thead
-                                    tr
-                                        th Attribute
-                                        th Description
-                                tbody
-                                    tr
-                                        td first_name
-                                        td='Get the first name of the user with id <user_id>'
-                                    tr
-                                        td last_name
-                                        td='Get the last name of the user with id <user_id>'
-
-                        .panel-heading
                             button(class='btn-block' data-toggle='collapse' data-target='#venues') Venues
                         .panel-body.collapse(id='venues')
                             h2(style='text-align: left')
