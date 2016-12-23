@@ -22,7 +22,7 @@ module.exports = function (restobar) {
 
         // This function has no use if either the user or venue is specified
         // Return 400 error if either isn't specified
-        if(user_id && venue_id){
+        if(!user_id || !venue_id){
             next(400);
             return;
         }
@@ -33,6 +33,7 @@ module.exports = function (restobar) {
         .on('error' , function (err) {
             // do nothing
             // This is here to catch the error if it happens
+            restobar.devWarn(err);
         })
         .on('end' , function (result) {
             if(result.rows.length == 0){
