@@ -138,4 +138,26 @@ module.exports = function (restobar) {
             );
         });
     });
+
+    /*************/
+    /* Favorites */
+    /*************/
+
+    router.get('/favorites', function (req, res, next) {
+        var user = auth(req);
+
+        authCheck(req, res, function () {
+            //
+            restobar.client.query({
+                text: 'SELECT user_favorites.venue_id FROM user_favorites INNER JOIN users ON user_favorites.user_id=users.user_id WHERE users.username=$1::varchar',
+                values: [user.name]
+            })
+                .on('error', function () {
+                    jsonFail(res);
+                })
+                .on('end', function (result) {
+                    res.json(result.rows);
+                });
+        });
+    });
 };
