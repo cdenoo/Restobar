@@ -143,21 +143,39 @@ module.exports = function (restobar) {
     /* Favorites */
     /*************/
 
+    // GET the favorites of the authenticated user
     router.get('/favorites', function (req, res, next) {
         var user = auth(req);
 
         authCheck(req, res, function () {
-            //
-            restobar.client.query({
+            // Query the database for the favorites of the currently authenticated user
+            objectResultQuery({
                 text: 'SELECT user_favorites.venue_id FROM user_favorites INNER JOIN users ON user_favorites.user_id=users.user_id WHERE users.username=$1::varchar',
                 values: [user.name]
-            })
-                .on('error', function () {
-                    jsonFail(res);
-                })
-                .on('end', function (result) {
-                    res.json(result.rows);
+            }, res, next);
+        });
+    });
+
+    // DELETE from the favorites of the authenticated user
+    router.delete('/favorites/:venueid', function (req, res, next) {
+        var user = auth(req);
+        var venue_id = req.params.venueid;
+
+        authCheck(req, res, function () {
+            // If there is not venue identifier specified, there is no use to this function
+            // So return false if this happens
+            if(!venue_id){
+                jsonFail(res);
+                return;
+            }
+
+            // Find the pair (user_id, venue_id) in the table user_favorites and delete it
+            restobar.client.query(
+                {
+                    text: 'DELETE FROM user_favorites WHERE venue_id=$1::int AND user_id IN (SELECT user_id FROM users WHERE username=$2::varchar)',
+                    values: [venue_id, user.name]
                 });
+            res.json({success: true});
         });
     });
 };
