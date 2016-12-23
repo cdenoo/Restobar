@@ -107,7 +107,7 @@ module.exports = function (restobar) {
     function returnAllVenues(res){
         restobar.client.query({
             name: "select_all_venues_alphabetically_with_rating",
-            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues ORDER BY name ASC LIMIT 300"
+            text: "SELECT venues.*, (SELECT AVG(venue_ratings.rating) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) AS rating, (SELECT COUNT(venue_ratings.venue_id) FROM venue_ratings WHERE venue_ratings.venue_id=venues.venue_id) FROM venues ORDER BY name ASC"
         })
         .on('error', function(error){
             console.log(error);
