@@ -95,9 +95,7 @@ module.exports = function (restobar) {
     /************/
 
     router.get('/', function (req, res, next) {
-        authCheck(req, res, function () {
-            res.render('api', {title: 'API Reference'});
-        })
+        res.render('api', {title: 'API Reference'});
     });
 
     /**************/

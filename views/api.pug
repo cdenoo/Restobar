@@ -5,6 +5,15 @@ block bodycontent
         | #{title}
     .container-fluid
         .panel.panel-default
+            .panel-body.panel-body-content
+                p
+                    | Welcome to the RestoBar API reference.
+                p
+                    | To access our data you should register on
+                    a(href='/') our main website
+                    |  and authenticate yourself.
+                p We use basic authentication to protect the users' data.
+        .panel.panel-default
             .panel-body
                 .panel-body-content
                     .panel.panel-default
@@ -55,3 +64,34 @@ block bodycontent
                                     tr
                                         td owner_id
                                         td='Get the id of the owner of the venue with id <venue_id>'
+
+                        .panel-heading
+                            button(class='btn-block' data-toggle='collapse' data-target='#favorites') Favorites
+                        .panel-body.collapse(id='favorites')
+                            h2(style='text-align: left')
+                                a(href='/api/favorites') /favorites/
+                            p(style='text-align: left') Returns all identifiers of the favorites of the authenticated user.
+                            table.table.table-bordered
+                                thead
+                                    tr
+                                        th Attribute
+                                        th Description
+                                tbody
+                                    tr
+                                        td venue_id
+                                        td Get the identifier of the favorited venue.
+
+                        .panel-heading
+                            button(class='btn-block' data-toggle='collapse' data-target='#ratings') Ratings
+                        .panel-body.collapse(id='ratings')
+                            h2(style='text-align: left')= '/ratings/<id>'
+                            p(style='text-align: left') Returns the venue's data specified by it's identifier.
+                            table.table.table-bordered
+                                thead
+                                    tr
+                                        th Attribute
+                                        th Description
+                                tbody
+                                    tr
+                                        td venue_id
+                                        td Get the identifier of the favorited venue.
