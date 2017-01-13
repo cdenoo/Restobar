@@ -9,11 +9,6 @@ var forecast = require('forecast');
 var multer = require('multer');
 
 var RestobarApp = function () {
-
-    this.user_other = 0;
-    this.user_male = 1;
-    this.user_female = 2;
-
     // Function for debugging purposes, only prints to the console if environment variable NODE_ENV is set to development
     this.devWarn = function (value) {
         if(process.env.NODE_ENV === 'development'){
@@ -31,6 +26,10 @@ var RestobarApp = function () {
         this._app.use(bodyparser.json());
         this._app.use(cookieParser());
         this._app.use(favicon('public/images/favicon.ico'));
+
+        this.user_other = 0;
+        this.user_male = 1;
+        this.user_female = 2;
     };
 
     // Initialise the public directory with scripts and css
