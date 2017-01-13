@@ -8,7 +8,7 @@ module.exports = function (restobar) {
             userID: req.cookies.user,
             errors: errors,
             recommendations: recommendations,
-            nmbRecommendations: recommendations.length,
+            nmbRecommendations: recommendations? recommendations.length : 0,
             recentlyRated: recentlyRated,
             recentlyAdded: recentlyAdded,
             userFavorites: userFavorites
