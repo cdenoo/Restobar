@@ -107,6 +107,7 @@ block bodycontent
 
         section#personalRecommendations.row
             #leftCol.col-md-6
+                h3 Venues in the neighborhood
                 #googlemap
 
                 #recentRatings(style="display: none;")
@@ -153,7 +154,7 @@ block bodycontent
             function getVenuesAroundMe(location){
                 if (location) {
                     $.get('/venues_around_me', {lat: location.coords.latitude, long: location.coords.longitude}, function(data){
-                        if(data[0] != "SUCCESS" || true){
+                        if(data[0] != "SUCCESS" ){
                             $("#googlemap").css("display" , "none");
                             $("#recentRatings").css("display", "block");
                             return;
